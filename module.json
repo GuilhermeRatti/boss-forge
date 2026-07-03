@@ -1,0 +1,57 @@
+{
+  "id": "boss-forge",
+  "title": "Boss Forge",
+  "description": "GM-side authoring and orchestration layer for homebrew D&D 5e boss fights: legendary action economy, legendary resistance, lair events, HP phases and boss-grade FX presets on top of Sequencer.",
+  "version": "0.0.0",
+  "authors": [
+    {
+      "name": "Guilherme Ratti Moraes"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/boss-forge.mjs"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "packs": [
+    {
+      "name": "boss-forge-macros",
+      "label": "Boss Forge Macros",
+      "path": "packs/boss-forge-macros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "NONE",
+        "TRUSTED": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "sequencer",
+        "type": "module",
+        "manifest": "https://github.com/fantasycalendar/FoundryVTT-Sequencer/releases/latest/download/module.json"
+      }
+    ]
+  },
+  "url": "https://github.com/OWNER/boss-forge",
+  "manifest": "https://github.com/OWNER/boss-forge/releases/latest/download/module.json",
+  "download": "https://github.com/OWNER/boss-forge/releases/download/v0.0.0/module.zip",
+  "readme": "README.md",
+  "license": "LICENSE"
+}

@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+
+# Compiled compendium packs (LevelDB) — source of truth lives in packs/_source/
+packs/*
+!packs/_source/
+
+# Release artifacts
+*.zip
