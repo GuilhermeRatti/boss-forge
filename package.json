@@ -1,0 +1,13 @@
+{
+  "name": "boss-forge",
+  "private": true,
+  "type": "module",
+  "description": "Development tooling for the Boss Forge Foundry VTT module. The module itself ships as plain ESM with no build step; npm is only used to compile compendium packs.",
+  "scripts": {
+    "packs:build": "node tools/packs.mjs build",
+    "packs:extract": "node tools/packs.mjs extract"
+  },
+  "devDependencies": {
+    "@foundryvtt/foundryvtt-cli": "^3.0.4"
+  }
+}

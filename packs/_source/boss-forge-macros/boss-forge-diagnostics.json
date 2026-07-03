@@ -1,0 +1,20 @@
+{
+  "_id": "bossforgediag001",
+  "_key": "!macros!bossforgediag001",
+  "name": "Boss Forge: Diagnostics",
+  "type": "script",
+  "img": "icons/svg/eye.svg",
+  "scope": "global",
+  "command": "const api = game.modules.get(\"boss-forge\")?.api;\nif (!api?.diagnostics) {\n  ui.notifications?.error(\"Boss Forge: module is not active or not ready yet.\");\n} else {\n  await api.diagnostics();\n}",
+  "author": null,
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "boss-forge": {
+      "managed": true
+    }
+  }
+}
