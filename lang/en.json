@@ -1,0 +1,16 @@
+{
+  "BOSSFORGE": {
+    "Settings": {
+      "Debug": {
+        "Name": "Debug logging",
+        "Hint": "Print verbose Boss Forge debug messages to the browser console (F12)."
+      }
+    },
+    "Diagnostics": {
+      "Title": "Boss Forge — Diagnostics",
+      "Instructions": "Copy the full report below when reporting issues. It was also printed to the console (F12) and copied to your clipboard.",
+      "Close": "Close",
+      "Copied": "Boss Forge: diagnostics report copied to clipboard."
+    }
+  }
+}

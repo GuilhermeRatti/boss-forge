@@ -1,0 +1,16 @@
+{
+  "BOSSFORGE": {
+    "Settings": {
+      "Debug": {
+        "Name": "Log de depuração",
+        "Hint": "Imprime mensagens de depuração detalhadas do Boss Forge no console do navegador (F12)."
+      }
+    },
+    "Diagnostics": {
+      "Title": "Boss Forge — Diagnóstico",
+      "Instructions": "Copie o relatório completo abaixo ao reportar problemas. Ele também foi impresso no console (F12) e copiado para a área de transferência.",
+      "Close": "Fechar",
+      "Copied": "Boss Forge: relatório de diagnóstico copiado para a área de transferência."
+    }
+  }
+}
