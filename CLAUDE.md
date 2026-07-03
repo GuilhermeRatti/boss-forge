@@ -7,7 +7,8 @@ Comunicação com o usuário: **PT-BR**, técnica e direta, honestidade sobre in
 ## Estado atual
 
 - **M0 entregue, aguardando aceite do usuário.** Não abrir M1 sem aceite explícito.
-- Pendências bloqueantes leves: saída da macro de diagnóstico (→ commitar em `docs/environment.md`, pinar versões no README); URL do repositório GitHub.
+- Pendência bloqueante leve: saída da macro de diagnóstico (→ commitar em `docs/environment.md`, pinar versões no README).
+- Repo GitHub: `https://github.com/GuilhermeRatti/Boss-Forge` (criado e com main publicada pelo próprio usuário; no Windows o clone vai na pasta `boss-forge`, minúscula — id do módulo).
 - **Adiantado sem quebrar o gate**: pesquisa §9 do M1/M2 concluída (`docs/research/2026-07-03-m1-dnd5e-5.3.3.md`, `…-foundry-v13-combat-hooks.md`, `…-m2-midi-qol-v13.md`, `…-sequencer-effects.md`; referência dnd5e 5.3.3 provisória — re-verificar na tag do diagnóstico) e design do M1 em `docs/design/m1-ciclo-acao-lendaria.md` aguardando revisão. Fatos-chave: reset de legact e consumo via activity (activation.type "legendary") são NATIVOS do dnd5e; covil 2024 = toggle nativo `lair.inside`; dnd5e tem `resistSave()` nativo p/ M2; gancho do orquestrador = `combatTurnChange` + guarda de GM ativo.
 - Setup de máquinas: código editado **nesta máquina Linux**; o Foundry roda em **outra máquina, Windows 11**. A ponte é git: clone do repo direto em `Data\modules\boss-forge` no Windows, atualização por `git pull` + `npm run packs:build` (mundo fechado) — ver DEVELOPMENT.md §2. Não há Foundry local para testar.
 
