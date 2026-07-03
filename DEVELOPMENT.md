@@ -15,40 +15,58 @@ Quando você ativa o módulo num mundo, o Foundry carrega esses arquivos no nave
 
 ## 2. Setup do ambiente de desenvolvimento
 
-Pré-requisitos: git e Node.js (≥ 18; o repo foi criado com Node 22).
+**Configuração real deste projeto: o código é editado no Linux e o Foundry roda em OUTRA máquina, com Windows 11.** O git faz a ponte entre as duas — o repo no GitHub é a fonte da verdade, e no Windows o clone vive direto dentro da pasta de módulos do Foundry.
 
-```bash
-# 1. Clone (ou use a pasta atual do repo)
-git clone https://github.com/SEU_USUARIO/boss-forge.git
+### 2.1. Máquina de código (Linux — já pronta)
+
+Pré-requisitos: git e Node.js (≥ 18; o repo foi criado com Node 22). O repo local já tem `npm install` e `npm run packs:build` executados. Fluxo: editar → commit → `git push`.
+
+### 2.2. Máquina do Foundry (Windows 11 — setup único)
+
+Pré-requisitos: [Git for Windows](https://git-scm.com/download/win) e [Node.js LTS](https://nodejs.org) (Node só compila compêndios).
+
+1. Descubra o diretório de dados do Foundry: **Configuration → User Data Path** (padrão: `C:\Users\SEU_USUARIO\AppData\Local\FoundryVTT\Data`).
+2. No prompt de comando:
+
+```bat
+cd %LOCALAPPDATA%\FoundryVTT\Data\modules
+git clone https://github.com/SEU_USUARIO/boss-forge.git boss-forge
 cd boss-forge
-
-# 2. Instale as ferramentas de desenvolvimento (só compilam compêndios)
 npm install
-
-# 3. Compile os compêndios (obrigatório antes do primeiro uso — a pasta
-#    packs/ compilada não vai para o git)
 npm run packs:build
 ```
 
-Agora ligue o repo à pasta de módulos do Foundry com um **link simbólico** — assim você edita no repo e o Foundry enxerga na hora, sem copiar arquivos.
+Clonar direto dentro de `Data\modules` dispensa junction/symlink: a pasta do clone **é** a pasta do módulo (o nome precisa ser exatamente `boss-forge`, igual ao id no `module.json`).
 
-**Linux/macOS** (caminho padrão do Linux mostrado; ajuste se o seu for outro):
+### 2.3. Atualizar o módulo no Windows (cada iteração)
+
+Com o **mundo fechado** (volte ao setup — o Foundry mantém lock nos bancos LevelDB dos compêndios com o mundo aberto):
+
+```bat
+cd %LOCALAPPDATA%\FoundryVTT\Data\modules\boss-forge
+git pull
+npm run packs:build
+```
+
+O `packs:build` só é obrigatório quando algo em `packs/_source/` mudou (as entregas avisam quando for o caso), mas rodar sempre é rápido e inofensivo. Mudança só de código `.mjs` não precisa de build: `git pull` + F5 basta, mesmo com o mundo aberto.
+
+### 2.4. Alternativa para Foundry na MESMA máquina do código
+
+Se um dia o Foundry rodar na máquina de desenvolvimento, troque o clone dentro de `Data/modules` por um link simbólico para o repo de trabalho:
 
 ```bash
+# Linux/macOS
 ln -s "/home/guilhermeratti/Área de trabalho/Boss Forge" "$HOME/.local/share/FoundryVTT/Data/modules/boss-forge"
 ```
 
-**Windows** (prompt de comando como administrador; junction não exige admin, mas evita surpresas):
-
 ```bat
-mklink /J "C:\Users\SEU_USUARIO\AppData\Local\FoundryVTT\Data\modules\boss-forge" "C:\caminho\para\o\repo\boss-forge"
+:: Windows (junction; não exige admin)
+mklink /J "%LOCALAPPDATA%\FoundryVTT\Data\modules\boss-forge" "C:\caminho\para\o\repo\boss-forge"
 ```
-
-> ⚠️ O Foundry **não** foi detectado nesta máquina Linux. Confirme em qual máquina/SO o seu Foundry roda e onde fica o diretório de dados (no Foundry: **Configuration → User Data Path**) antes de criar o link. Se o Foundry roda em outra máquina, o link simbólico não se aplica — nesse caso instale sempre via release (seção 5) ou sincronize a pasta manualmente.
 
 ## 3. Ciclo de desenvolvimento
 
-1. Edite o código no repo.
+1. Edite o código no repo (Linux) e faça push; atualize o clone no Windows (seção 2.3).
 2. No Foundry, pressione **F5** (recarrega o cliente; módulos são recarregados do disco).
 3. Teste. Abra o console com **F12** — o critério permanente de aceite é console limpo: sem erros e sem *deprecation warnings*.
 4. Para logs detalhados, ative **Configurações → Boss Forge → Log de depuração**. Mensagens do módulo têm o prefixo `Boss Forge |`.

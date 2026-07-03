@@ -7,7 +7,8 @@ Comunicação com o usuário: **PT-BR**, técnica e direta, honestidade sobre in
 ## Estado atual
 
 - **M0 entregue, aguardando aceite do usuário.** Não abrir M1 sem aceite explícito.
-- Pendências bloqueantes leves: saída da macro de diagnóstico (→ commitar em `docs/environment.md`, pinar versões no README); URL do repositório GitHub; onde o Foundry do usuário roda (não está instalado nesta máquina Linux — pode ser outra máquina/Windows).
+- Pendências bloqueantes leves: saída da macro de diagnóstico (→ commitar em `docs/environment.md`, pinar versões no README); URL do repositório GitHub.
+- Setup de máquinas: código editado **nesta máquina Linux**; o Foundry roda em **outra máquina, Windows 11**. A ponte é git: clone do repo direto em `Data\modules\boss-forge` no Windows, atualização por `git pull` + `npm run packs:build` (mundo fechado) — ver DEVELOPMENT.md §2. Não há Foundry local para testar.
 
 ## Ambiente-alvo (fatos pinados)
 
