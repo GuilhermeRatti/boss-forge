@@ -29,15 +29,15 @@ https://github.com/GuilhermeRatti/boss-forge/releases/download/vX.Y.Z/module.jso
 
 ## Pinned target environment
 
-<!-- Populated from the diagnostics report (docs/environment.md). -->
+Pinned from the diagnostics report of 2026-07-04 — full output and analysis in [docs/environment.md](docs/environment.md).
 
 | Component | Version |
 | --- | --- |
-| Foundry VTT | 13 (exact build pending diagnostics) |
-| dnd5e | pending diagnostics |
-| Sequencer | pending diagnostics |
-| Midi-QOL | pending diagnostics |
-| DAE | pending diagnostics |
+| Foundry VTT | 13.351 |
+| dnd5e | 5.3.3 |
+| Sequencer | 4.2.2 |
+| Midi-QOL | 13.0.63 |
+| DAE | 13.0.29 |
 
 ## Roadmap
 
