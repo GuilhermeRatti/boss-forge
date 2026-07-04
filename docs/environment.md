@@ -41,7 +41,7 @@ Apenas **`blfx`**. Consequência para o FX Preset Engine: nenhum path `jb2a.*` p
 
 ## Discrepâncias vs. stack presumido no CLAUDE.md
 
-- **JB2A Patreon: não instalado** (nenhum prefixo `jb2a` no database; nenhuma pasta `jb2a*` em `Data\modules` na listagem de 2026-07-04). Decisão pendente do usuário: instalar JB2A nesta máquina ou construir os presets só sobre `blfx.*`.
+- **JB2A Patreon: não instalado** (nenhum prefixo `jb2a` no database; nenhuma pasta `jb2a*` em `Data\modules` na listagem de 2026-07-04). **Decisão (2026-07-04): o usuário vai instalar o JB2A Patreon.** Após instalar e ativar no mundo, re-executar a macro de diagnóstico e atualizar este arquivo com os prefixos novos.
 - **Combat Carousel: não instalado.** Cosmético, sem impacto nas integrações — o orquestrador usa `combatTurnChange` + guarda de GM ativo e não depende de quem avança o turno.
 - Automated Animations está presente no disco mas **inativo** no mundo dnd5e — consistente com a decisão de mantê-lo fora do stack 5e (é do projeto Tormenta 20).
 
