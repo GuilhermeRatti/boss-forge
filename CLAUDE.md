@@ -6,8 +6,8 @@ Comunicação com o usuário: **PT-BR**, técnica e direta, honestidade sobre in
 
 ## Estado atual
 
-- **M0 entregue, aguardando aceite do usuário.** Não abrir M1 sem aceite explícito.
-- Diagnóstico M0 executado em **2026-07-04** e registrado em `docs/environment.md` (versões pinadas lá e no README). Discrepância: **JB2A Patreon ainda não está instalado** (database do Sequencer só tem `blfx`) — **decidido em 2026-07-04: o usuário vai instalá-lo**; re-rodar o diagnóstico depois e atualizar `docs/environment.md`. Combat Carousel ausente (cosmético, sem impacto).
+- **M0 ACEITO em 2026-07-04** — diagnóstico ok e console limpo confirmados pelo usuário. Próximo gate do M1: **revisão do design doc pelo usuário** (`docs/design/m1-ciclo-acao-lendaria.md`) antes de qualquer implementação.
+- Diagnóstico M0 executado em **2026-07-04** e registrado em `docs/environment.md` (versões pinadas lá e no README). Discrepância: **JB2A Patreon ainda não está instalado** (database do Sequencer só tem `blfx`). O instalador do app do Foundry falha na extração (causa-raiz nos logs, registrada em `docs/environment.md`); pendente **instalação manual do zip 0.9.1** — depois, re-rodar o diagnóstico e atualizar `docs/environment.md`. Combat Carousel ausente (cosmético, sem impacto).
 - Repo GitHub: `https://github.com/GuilhermeRatti/boss-forge` (criado e com main publicada pelo próprio usuário; no Windows o clone vai na pasta `boss-forge` — id do módulo).
 - **Adiantado sem quebrar o gate**: pesquisa §9 do M1/M2 concluída (`docs/research/2026-07-03-m1-dnd5e-5.3.3.md`, `…-foundry-v13-combat-hooks.md`, `…-m2-midi-qol-v13.md`, `…-sequencer-effects.md`; referência dnd5e 5.3.3 **confirmada pelo diagnóstico**) e design do M1 em `docs/design/m1-ciclo-acao-lendaria.md` aguardando revisão. Fatos-chave: reset de legact e consumo via activity (activation.type "legendary") são NATIVOS do dnd5e; covil 2024 = toggle nativo `lair.inside`; dnd5e tem `resistSave()` nativo p/ M2; gancho do orquestrador = `combatTurnChange` + guarda de GM ativo.
 - Setup de máquinas (**atualizado 2026-07-04**): código e Foundry agora na **mesma máquina Windows 11** — repo em `C:\Users\guira\OneDrive\Documentos\GitHub\boss-forge`, Foundry em `%LOCALAPPDATA%\FoundryVTT`. O módulo ativo no Foundry veio de **instalação via manifest da release v0.0.1** (pipeline de release validado de ponta a ponta), não de clone git; para testar código não-released, usar a junction do DEVELOPMENT.md §2.4. Setup antigo (código no Linux) segue documentado como alternativa.
@@ -16,7 +16,7 @@ Comunicação com o usuário: **PT-BR**, técnica e direta, honestidade sobre in
 
 - **Foundry VTT v13, build 13.351** (diagnóstico 2026-07-04) — não migrar para v14 até o ecossistema Midi estabilizar; código forward-compatible.
 - **dnd5e 5.3.3** "moderno" (regras 2024, errata set/2024) — pinado pelo diagnóstico; igual à tag da pesquisa M1.
-- Módulos ativos da mesa (versões completas em `docs/environment.md`): Midi-QOL 13.0.63, DAE 13.0.29, Sequencer 4.2.2, BLFX (blfx-assets-pack01 + boss-loot-assets-premium), libWrapper, socketlib. **JB2A Patreon e Combat Carousel ainda NÃO estão instalados** (JB2A: instalação prometida pelo usuário — re-rodar o diagnóstico depois; Carousel: cosmético).
+- Módulos ativos da mesa (versões completas em `docs/environment.md`): Midi-QOL 13.0.63, DAE 13.0.29, Sequencer 4.2.2, BLFX (blfx-assets-pack01 + boss-loot-assets-premium), libWrapper, socketlib. **JB2A Patreon e Combat Carousel ainda NÃO estão instalados** (JB2A: instalação manual do 0.9.1 pendente — re-rodar o diagnóstico depois; Carousel: cosmético).
 - **Automated Animations está FORA do stack 5e por decisão** (conflito de nicho com BLFX; presente no disco, inativo no mundo dnd5e). Boss Forge fala com o Sequencer diretamente. AA é de OUTRO projeto do usuário (Tormenta 20) — não misturar.
 - Database do Sequencer: **apenas o prefixo `blfx`** — nenhum default `jb2a.*` pode ser assumido; presets validam paths com `Sequencer.Database.entryExists()`.
 
@@ -31,7 +31,7 @@ Covil em dois paradigmas: clássico 2014 (iniciativa 20) e 2024 (usos extras de 
 
 ## Milestones (ordem estrita — não abrir M(n+1) sem aceite de M(n))
 
-- **M0 — Fundação** ✅ entregue: repo, `module.json`, ESM sem build, i18n en/pt-BR, logger + setting de debug, macro de diagnóstico em compêndio, Action de release, `DEVELOPMENT.md`.
+- **M0 — Fundação** ✅ aceito (2026-07-04): repo, `module.json`, ESM sem build, i18n en/pt-BR, logger + setting de debug, macro de diagnóstico em compêndio, Action de release, `DEVELOPMENT.md`.
 - **M1 — Ciclo de ação lendária**: dialog GM ao fim de turno ≠ boss; consumo de `legact` via activity nativa + FX; reset no turno do boss.
 - **M2 — Resistência lendária**: save falho → dialog → sucesso forçado + decremento de `legres`, dentro do workflow do Midi.
 - **M3 — Covil**: prompt iniciativa 20 (2014) e bônus de usos com toggle (2024).
