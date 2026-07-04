@@ -69,6 +69,54 @@
       "ActionsPrompt": "Initiative count {initiative}, round {round}: <strong>{name}</strong> may take a lair action.",
       "SceneMarked": "Scene \"{scene}\" marked as the lair of {name}.",
       "SceneCleared": "Lair mark cleared from scene \"{scene}\"."
+    },
+    "FxCatalog": {
+      "Title": "Boss Forge — FX Forge",
+      "OpenButton": "Boss Forge: FX Forge",
+      "PresetsHeader": "Presets",
+      "ApplySection": "Forge onto the boss",
+      "ApplyContext": "Selected token:",
+      "ApplyModeItem": "Legendary/lair action (item)",
+      "ApplyModeLegres": "Legendary resistance burn (actor)",
+      "ApplyModeLair": "Lair mode activation (actor)",
+      "AtBoss": "Play on the boss",
+      "AtTargets": "Play on the targets",
+      "NoTokenHint": "Select a boss token to apply this preset to its actions or actor.",
+      "NoToken": "Select a token first (it anchors the preview and the apply target).",
+      "NoItem": "No legendary/lair action item selected.",
+      "Preview": "Preview",
+      "PreviewFailed": "The preset did not play — check the file path (console has details).",
+      "Apply": "Apply",
+      "AppliedItem": "FX forged onto \"{item}\".",
+      "AppliedLegres": "FX forged onto {name}'s legendary resistance.",
+      "AppliedLair": "FX forged onto {name}'s lair activation.",
+      "Copy": "Copy code",
+      "CopyHint": "Copies an api.fx.play(...) macro snippet with the current parameters.",
+      "Copied": "Macro snippet copied to clipboard.",
+      "OpenDatabase": "Browse the Sequencer database"
+    },
+    "FxPresets": {
+      "impact": { "Name": "Impact", "Tag": "single hit", "Description": "One effect at each target location — the bread-and-butter strike." },
+      "telegraph": { "Name": "Telegraph", "Tag": "warned area", "Description": "Asset-free warning circle under the tokens; the optional impact lands exactly as the warning expires." },
+      "beam": { "Name": "Beam", "Tag": "source → target", "Description": "Stretches the effect from the boss to each target — breaths, rays and chains." },
+      "rain": { "Name": "Meteor Rain", "Tag": "random barrage", "Description": "Staggered impacts at random points around the boss, each telegraphed by its own warning circle." },
+      "aura": { "Name": "Aura", "Tag": "persistent", "Description": "Persistent effect attached to the token — enrage glows and phase auras. Clear with api.fx.clearAuras." }
+    },
+    "FxParams": {
+      "file": { "Label": "Effect file", "Hint": "Sequencer database path (jb2a…, blfx…) or a direct file path." },
+      "scale": { "Label": "Scale", "Hint": "" },
+      "delay": { "Label": "Delay (ms)", "Hint": "" },
+      "radius": { "Label": "Radius (squares)", "Hint": "" },
+      "color": { "Label": "Warning color", "Hint": "" },
+      "duration": { "Label": "Warning duration (ms)", "Hint": "" },
+      "count": { "Label": "Impact count", "Hint": "" },
+      "interval": { "Label": "Interval (ms)", "Hint": "Stagger between impacts." },
+      "telegraph": { "Label": "Telegraph impacts", "Hint": "" },
+      "telegraphDuration": { "Label": "Warning duration (ms)", "Hint": "" },
+      "impactRadius": { "Label": "Warning radius (squares)", "Hint": "" },
+      "opacity": { "Label": "Opacity", "Hint": "" },
+      "fadeIn": { "Label": "Fade in (ms)", "Hint": "" },
+      "belowToken": { "Label": "Below the token", "Hint": "" }
     }
   }
 }

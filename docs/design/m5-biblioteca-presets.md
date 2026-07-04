@@ -38,6 +38,14 @@ Casos de uso imediatos: `aura` como FX de fase (enrage!), `telegraph` como FX de
 
 **Técnica anotada (observação do usuário)**: o BLFX cria *atores invisíveis* para magias como Darkness/Daylight — provável veículo para fontes de luz/escuridão móveis e controláveis. Guardar como caminho para futuros presets de iluminação (aura de escuridão, eclipse de fase); fora do escopo da parte 2.
 
-## 6. Pós-teste
+## 6. Parte 2 entregue (2026-07-04) — a Forja de FX
+
+Identidade visual **própria** (instrução do usuário: inspirar no BLFX sem copiar): tema "forja" — carvão/aço com brasa laranja-fundida (`--bf-ember`), **cantos chanfrados** via clip-path (metal forjado; contraponto às pílulas arredondadas do BLFX), glow de calor em hover/foco, switches de brasa, tema claro/escuro via variáveis CSS. Estrutura: master-detail (trilho de presets à esquerda; herói + formulário + aplicar à direita), formulário **gerado dos metadados** do registro (preset novo aparece na UI sem código de UI), preview no token selecionado (alvos marcados viram locations), aplicar em item lendário/covil, legres ou covil do ator, botão de database do Sequencer no campo de arquivo, e "Copiar código" como válvula de escape de power user (lição do editor do BLFX). Abertura: botão GM na barra de tokens ou `api.fx.openCatalog()`.
+
+## 7. Backlog de ideias (do usuário)
+
+- **Telegraph por turnos** (2026-07-04): virada de turno telegrafa X impactos; na virada seguinte eles explodem e novos X são telegrafados — mecânica de boss fight acoplada ao tracker. A discutir (impacto no ritmo da luta) antes de prototipar.
+
+## 8. Pós-teste
 
 Feedback do usuário decide podas/ajustes, registrados aqui.

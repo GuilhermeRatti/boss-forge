@@ -10,6 +10,7 @@ import {
   clearActorLegresFx
 } from "./legendary/resistance.mjs";
 import { playPreset, listPresets, presetExists, describePreset, clearAuras } from "./fx/presets.mjs";
+import { openCatalog, registerCatalogButton } from "./fx/catalog.mjs";
 import {
   registerLairOrchestrator,
   setInside,
@@ -41,6 +42,7 @@ Hooks.once("init", () => {
   registerLegendaryResistance();
   registerLairOrchestrator();
   registerPhaseOrchestrator();
+  registerCatalogButton();
   log.info("Initialized.");
 });
 
@@ -54,7 +56,8 @@ Hooks.once("ready", () => {
       list: listPresets,
       exists: presetExists,
       describe: describePreset,
-      clearAuras
+      clearAuras,
+      openCatalog
     }),
     legendary: Object.freeze({
       setItemFx,

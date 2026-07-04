@@ -1,0 +1,95 @@
+<div class="bf-layout">
+  <nav class="bf-rail">
+    <p class="bf-rail-header">{{localize "BOSSFORGE.FxCatalog.PresetsHeader"}}</p>
+    {{#each presets}}
+    <div class="bf-preset-card {{#if active}}active{{/if}}" data-action="selectPreset" data-preset="{{id}}">
+      <i class="{{icon}}"></i>
+      <div>
+        <span class="bf-preset-name">{{name}}</span>
+        <span class="bf-preset-tag">{{tag}}</span>
+      </div>
+    </div>
+    {{/each}}
+  </nav>
+
+  <section class="bf-main">
+    <header class="bf-hero">
+      <div class="bf-hero-icon"><i class="{{selected.icon}}"></i></div>
+      <div>
+        <h2>{{selected.name}}</h2>
+        <p>{{selected.description}}</p>
+      </div>
+    </header>
+
+    <div class="bf-params">
+      {{#each params}}
+      <div class="bf-field">
+        <label for="bf-param-{{key}}">{{label}}</label>
+        {{#if isFile}}
+        <div class="bf-file-row">
+          <input type="text" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
+                 value="{{value}}" placeholder="jb2a. / blfx. …" />
+          <button type="button" class="bf-icon-button" data-action="openDatabaseViewer"
+                  data-tooltip="{{localize 'BOSSFORGE.FxCatalog.OpenDatabase'}}">
+            <i class="fa-solid fa-database"></i>
+          </button>
+        </div>
+        {{/if}}
+        {{#if isNumber}}
+        <input type="number" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
+               value="{{value}}" step="any" />
+        {{/if}}
+        {{#if isColor}}
+        <input type="text" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
+               value="{{value}}" placeholder="#ff5a1f" />
+        {{/if}}
+        {{#if isBoolean}}
+        <label class="bf-switch">
+          <input type="checkbox" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
+                 {{#if value}}checked{{/if}} />
+          <span class="bf-slider"></span>
+        </label>
+        {{/if}}
+        {{#if hint}}<p class="bf-hint">{{hint}}</p>{{/if}}
+      </div>
+      {{/each}}
+    </div>
+
+    <div class="bf-section-bar"><i class="fa-solid fa-stamp"></i>{{localize "BOSSFORGE.FxCatalog.ApplySection"}}</div>
+
+    {{#if hasActor}}
+    <p class="bf-context">{{localize "BOSSFORGE.FxCatalog.ApplyContext"}} <strong>{{actorName}}</strong></p>
+    <div class="bf-apply-row">
+      <select name="applyMode">
+        {{#if items.length}}<option value="item">{{localize "BOSSFORGE.FxCatalog.ApplyModeItem"}}</option>{{/if}}
+        <option value="legres">{{localize "BOSSFORGE.FxCatalog.ApplyModeLegres"}}</option>
+        <option value="lair">{{localize "BOSSFORGE.FxCatalog.ApplyModeLair"}}</option>
+      </select>
+      {{#if items.length}}
+      <select name="applyItem">
+        {{#each items}}<option value="{{id}}">{{name}}</option>{{/each}}
+      </select>
+      {{/if}}
+      <select name="applyAt">
+        <option value="boss">{{localize "BOSSFORGE.FxCatalog.AtBoss"}}</option>
+        <option value="targets">{{localize "BOSSFORGE.FxCatalog.AtTargets"}}</option>
+      </select>
+    </div>
+    {{else}}
+    <p class="bf-context">{{localize "BOSSFORGE.FxCatalog.NoTokenHint"}}</p>
+    {{/if}}
+
+    <footer class="bf-actions">
+      <button type="button" class="bf-primary" data-action="preview">
+        <i class="fa-solid fa-fire-flame-curved"></i>{{localize "BOSSFORGE.FxCatalog.Preview"}}
+      </button>
+      <button type="button" data-action="apply" {{#unless hasActor}}disabled{{/unless}}>
+        <i class="fa-solid fa-stamp"></i>{{localize "BOSSFORGE.FxCatalog.Apply"}}
+      </button>
+      <span class="bf-spacer"></span>
+      <button type="button" data-action="copySnippet" data-tooltip="{{localize 'BOSSFORGE.FxCatalog.CopyHint'}}">
+        <i class="fa-solid fa-code"></i>{{localize "BOSSFORGE.FxCatalog.Copy"}}
+      </button>
+    </footer>
+  </section>
+</div>

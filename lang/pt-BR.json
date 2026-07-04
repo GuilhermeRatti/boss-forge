@@ -69,6 +69,54 @@
       "ActionsPrompt": "Contagem de iniciativa {initiative}, round {round}: <strong>{name}</strong> pode usar uma ação de covil.",
       "SceneMarked": "Cena \"{scene}\" marcada como covil de {name}.",
       "SceneCleared": "Marca de covil removida da cena \"{scene}\"."
+    },
+    "FxCatalog": {
+      "Title": "Boss Forge — Forja de FX",
+      "OpenButton": "Boss Forge: Forja de FX",
+      "PresetsHeader": "Presets",
+      "ApplySection": "Forjar no boss",
+      "ApplyContext": "Token selecionado:",
+      "ApplyModeItem": "Ação lendária/de covil (item)",
+      "ApplyModeLegres": "Queima de resistência lendária (ator)",
+      "ApplyModeLair": "Ativação de covil (ator)",
+      "AtBoss": "Tocar no boss",
+      "AtTargets": "Tocar nos alvos",
+      "NoTokenHint": "Selecione o token de um boss para aplicar este preset às ações ou ao ator.",
+      "NoToken": "Selecione um token primeiro (ele ancora o preview e o destino do aplicar).",
+      "NoItem": "Nenhum item de ação lendária/covil selecionado.",
+      "Preview": "Preview",
+      "PreviewFailed": "O preset não tocou — confira o path do arquivo (detalhes no console).",
+      "Apply": "Aplicar",
+      "AppliedItem": "FX forjado em \"{item}\".",
+      "AppliedLegres": "FX forjado na resistência lendária de {name}.",
+      "AppliedLair": "FX forjado na ativação de covil de {name}.",
+      "Copy": "Copiar código",
+      "CopyHint": "Copia um snippet de macro api.fx.play(...) com os parâmetros atuais.",
+      "Copied": "Snippet de macro copiado para a área de transferência.",
+      "OpenDatabase": "Navegar no database do Sequencer"
+    },
+    "FxPresets": {
+      "impact": { "Name": "Impacto", "Tag": "golpe único", "Description": "Um efeito em cada alvo — o golpe básico de todo dia." },
+      "telegraph": { "Name": "Telegraph", "Tag": "área avisada", "Description": "Círculo de aviso sem asset sob os tokens; o impacto opcional cai exatamente quando o aviso expira." },
+      "beam": { "Name": "Raio", "Tag": "origem → alvo", "Description": "Estica o efeito do boss até cada alvo — breaths, raios e correntes." },
+      "rain": { "Name": "Chuva de Meteoros", "Tag": "rajada aleatória", "Description": "Impactos escalonados em pontos aleatórios ao redor do boss, cada um telegrafado pelo próprio círculo de aviso." },
+      "aura": { "Name": "Aura", "Tag": "persistente", "Description": "Efeito persistente preso ao token — brilhos de enrage e auras de fase. Limpe com api.fx.clearAuras." }
+    },
+    "FxParams": {
+      "file": { "Label": "Arquivo do efeito", "Hint": "Path do database do Sequencer (jb2a…, blfx…) ou caminho direto de arquivo." },
+      "scale": { "Label": "Escala", "Hint": "" },
+      "delay": { "Label": "Atraso (ms)", "Hint": "" },
+      "radius": { "Label": "Raio (quadrados)", "Hint": "" },
+      "color": { "Label": "Cor do aviso", "Hint": "" },
+      "duration": { "Label": "Duração do aviso (ms)", "Hint": "" },
+      "count": { "Label": "Número de impactos", "Hint": "" },
+      "interval": { "Label": "Intervalo (ms)", "Hint": "Escalonamento entre os impactos." },
+      "telegraph": { "Label": "Telegrafar impactos", "Hint": "" },
+      "telegraphDuration": { "Label": "Duração do aviso (ms)", "Hint": "" },
+      "impactRadius": { "Label": "Raio do aviso (quadrados)", "Hint": "" },
+      "opacity": { "Label": "Opacidade", "Hint": "" },
+      "fadeIn": { "Label": "Fade in (ms)", "Hint": "" },
+      "belowToken": { "Label": "Abaixo do token", "Hint": "" }
     }
   }
 }
