@@ -1,6 +1,6 @@
 import { MODULE_ID, SETTINGS, FLAGS } from "./constants.mjs";
 import { log } from "./logger.mjs";
-import { escapeHtml, actorSides } from "./utils.mjs";
+import { escapeHtml, actorSides, whisperGM } from "./utils.mjs";
 import { playPreset, presetExists, listPresets } from "./fx/presets.mjs";
 import { playItemFx } from "./legendary/item-fx.mjs";
 import { getActivitiesByActivationType } from "./legendary/activities.mjs";
@@ -42,14 +42,6 @@ function classicInitiative(actor) {
 
 function baseUuid(actor) {
   return actor.isToken ? (actor.token?.baseActor?.uuid ?? actor.uuid) : actor.uuid;
-}
-
-async function whisperGM(i18nKey, data) {
-  await ChatMessage.create({
-    speaker: { alias: "Boss Forge" },
-    content: game.i18n.format(i18nKey, data),
-    whisper: ChatMessage.getWhisperRecipients("GM").map(u => u.id)
-  });
 }
 
 /* -------------------------------------------- */

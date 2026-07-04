@@ -7,6 +7,19 @@ export function escapeHtml(text) {
 }
 
 /**
+ * Whisper a localized module message to the GMs.
+ * @param {string} i18nKey
+ * @param {object} [data]  Values for game.i18n.format (pre-escaped by caller).
+ */
+export async function whisperGM(i18nKey, data = {}) {
+  await ChatMessage.create({
+    speaker: { alias: "Boss Forge" },
+    content: game.i18n.format(i18nKey, data),
+    whisper: ChatMessage.getWhisperRecipients("GM").map(u => u.id)
+  });
+}
+
+/**
  * All actor documents that represent "the same boss" for flag purposes.
  * Unlinked tokens split a boss into a world actor plus per-token synthetic
  * actors (whose ActorDelta overrides the world actor's flags), so toggles

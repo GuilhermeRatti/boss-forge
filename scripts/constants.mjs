@@ -22,5 +22,7 @@ export const FLAGS = {
   LAIR_SCENE: "lairOf",
   PHASES: "phases",
   PHASE_STATE: "phaseState",
-  ITEM_PHASE: "phase"
+  ITEM_PHASE: "phase",
+  DEATH_TRIGGER: "deathTrigger",
+  GAP_TRIGGER: "gapTrigger"
 };

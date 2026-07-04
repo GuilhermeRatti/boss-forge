@@ -52,7 +52,9 @@
     },
     "Phases": {
       "Announcement": "{boss} entra em uma nova fase: {name}!",
-      "DefaultName": "Fase {index}"
+      "DefaultName": "Fase {index}",
+      "DeathTriggerFired": "Gatilho de fase: todas as criaturas vinculadas caíram — {name} avança de fase.",
+      "GapTriggerFired": "Gatilho de fase: diferença de {gap}% de HP entre {name} e {other} — ambos avançam de fase."
     },
     "Lair": {
       "InsideDialogTitle": "{name} — Covil",

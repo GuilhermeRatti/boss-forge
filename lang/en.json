@@ -52,7 +52,9 @@
     },
     "Phases": {
       "Announcement": "{boss} enters a new phase: {name}!",
-      "DefaultName": "Phase {index}"
+      "DefaultName": "Phase {index}",
+      "DeathTriggerFired": "Phase trigger: every linked creature is down — {name} advances a phase.",
+      "GapTriggerFired": "Phase trigger: HP gap of {gap}% between {name} and {other} — both advance a phase."
     },
     "Lair": {
       "InsideDialogTitle": "{name} — Lair",

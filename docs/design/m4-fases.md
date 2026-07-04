@@ -64,6 +64,17 @@ updateActor (todos os clientes; GM ativo age)
 - Config nos dois lados de token não-vinculado; estado vive no ator que sofreu o dano (o do combate).
 - Prompts (M1/M3) refletem a fase na hora — item marcado com a fase nova aparece no gatilho seguinte.
 
-## 7. Pós-teste
+## 7. Gatilhos adicionais (2ª iteração, 2026-07-04 — cenários do usuário)
 
-Feedback do usuário decide podas/ajustes, registrados aqui.
+Do feedback do primeiro teste (núcleo aprovado; cenários de campanha listados pelo usuário):
+
+1. **Fases por cura** (`direction: "up"` no `api.phases.set`): thresholds disparam quando `hp.pct` SOBE (proteger/curar um NPC de 1% até 100%; permite threshold 100). One-way para cima; flag legada em array continua valendo como "down".
+2. **Gatilho de mortes vinculadas** (`api.phases.linkDeaths(boss, [tokens...])`): quando TODAS as criaturas vigiadas estiverem com HP 0 (ou deletadas), o boss avança uma fase — ex.: banshees mortas → ritual cessa → sala seca → boss enfraquece (fases podem enfraquecer: `effects.disable` + ações que somem do prompt via fase de item). Dispara uma vez; `reset` re-arma.
+3. **Gatilho de diferença de HP** (`api.phases.linkGap(bossA, bossB, { gap: 25 })`): quando |pctA − pctB| ≥ gap, **ambos** avançam de fase (conselho/consortes em enrage). Uma vez; `reset` re-arma.
+4. **Manual**: `api.phases.advance(actor)` já cobria.
+
+Avisos de gatilho saem em whisper ao GM (o anúncio público da fase em si já acontece pelo fluxo normal). A cura passiva de 10%/turno do cenário de proteção fica fora do módulo (é um ActiveEffect/macro da mesa — as fases só reagem ao HP).
+
+## 8. Pós-teste
+
+Feedback do usuário decide podas/ajustes, registrados aqui. Primeiro teste (2026-07-04): transições, animações, mensagens e one-way aprovados; erro "api is not defined" era snippet do roteiro sem o prefixo `game.modules.get("boss-forge")` (corrigido na entrega seguinte).

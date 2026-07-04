@@ -28,7 +28,11 @@ import {
   advancePhase,
   getPhaseIndex,
   setItemPhase,
-  clearItemPhase
+  clearItemPhase,
+  linkDeaths,
+  clearDeathLink,
+  linkGap,
+  clearGapLink
 } from "./phases.mjs";
 
 Hooks.once("init", () => {
@@ -74,7 +78,11 @@ Hooks.once("ready", () => {
       advance: advancePhase,
       getIndex: getPhaseIndex,
       setItemPhase,
-      clearItemPhase
+      clearItemPhase,
+      linkDeaths,
+      clearDeathLink,
+      linkGap,
+      clearGapLink
     })
   });
   log.info(`Ready (version ${module.version}).`);
