@@ -18,7 +18,13 @@ import { presetExists, listPresets } from "../fx/presets.mjs";
  * @returns {Promise<Item>}
  */
 export async function setItemFx(item, preset, options = {}) {
-  if (!(item instanceof Item)) throw new Error("setItemFx: first argument must be an Item.");
+  if (item == null) {
+    throw new Error(
+      "setItemFx: item is null/undefined. If you used actor.items.getName(...), the name was not found — "
+      + "it is case-sensitive and must match the item (first half of the prompt button label, before the colon)."
+    );
+  }
+  if (!(item instanceof Item)) throw new Error("setItemFx: first argument must be an Item document.");
   if (!presetExists(preset)) {
     throw new Error(`setItemFx: unknown preset "${preset}". Available: ${listPresets().join(", ")}`);
   }

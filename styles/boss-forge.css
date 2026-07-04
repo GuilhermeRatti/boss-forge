@@ -1,0 +1,17 @@
+/* Legendary action prompt: stack the footer buttons so long labels stay
+ * readable. Interim styling only — the real UI pass comes with the Designer. */
+.boss-forge-legendary .form-footer {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.boss-forge-legendary .form-footer button {
+  width: 100%;
+  height: auto;
+  min-height: 2em;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.25;
+  padding: 4px 10px;
+}

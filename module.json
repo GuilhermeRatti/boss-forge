@@ -15,6 +15,9 @@
   "esmodules": [
     "scripts/boss-forge.mjs"
   ],
+  "styles": [
+    "styles/boss-forge.css"
+  ],
   "languages": [
     {
       "lang": "en",

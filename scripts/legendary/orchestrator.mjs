@@ -20,6 +20,21 @@ export function registerLegendaryOrchestrator() {
 }
 
 /**
+ * Enable/disable the legendary prompt for one boss (the "Don't ask again"
+ * opt-out flag). Takes effect at the next turn change.
+ * @param {Actor} actor
+ * @param {boolean} [enabled=true]
+ */
+export async function setPromptEnabled(actor, enabled = true) {
+  if (!(actor instanceof Actor)) {
+    throw new Error("setPromptEnabled: first argument must be an Actor (check game.actors.getName — it is case-sensitive).");
+  }
+  if (enabled) await actor.unsetFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED);
+  else await actor.setFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED, true);
+  return actor;
+}
+
+/**
  * @param {Combat} combat
  * @param {object} prior    CombatHistoryData of the turn that ended
  * @param {object} current  CombatHistoryData of the turn that started

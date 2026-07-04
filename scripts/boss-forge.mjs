@@ -2,7 +2,7 @@ import { MODULE_ID } from "./constants.mjs";
 import { registerSettings } from "./settings.mjs";
 import { log } from "./logger.mjs";
 import { runDiagnostics, buildDiagnosticsReport } from "./diagnostics.mjs";
-import { registerLegendaryOrchestrator } from "./legendary/orchestrator.mjs";
+import { registerLegendaryOrchestrator, setPromptEnabled } from "./legendary/orchestrator.mjs";
 import { setItemFx, clearItemFx, getItemFx } from "./legendary/item-fx.mjs";
 import { playPreset, listPresets, presetExists } from "./fx/presets.mjs";
 
@@ -25,7 +25,8 @@ Hooks.once("ready", () => {
     legendary: Object.freeze({
       setItemFx,
       clearItemFx,
-      getItemFx
+      getItemFx,
+      setPromptEnabled
     })
   });
   log.info(`Ready (version ${module.version}).`);

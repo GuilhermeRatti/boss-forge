@@ -86,6 +86,7 @@ async function showDialog({ actor, legact, entries, used, triggerName }) {
   })}</p>`;
 
   return foundry.applications.api.DialogV2.wait({
+    classes: ["boss-forge-legendary"],
     window: {
       title: game.i18n.format("BOSSFORGE.Legendary.DialogTitle", {
         name: actor.name,
