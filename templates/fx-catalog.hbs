@@ -15,10 +15,11 @@
   <section class="bf-main">
     <header class="bf-hero">
       <div class="bf-hero-icon"><i class="{{selected.icon}}"></i></div>
-      <div>
+      <div class="bf-hero-text">
         <h2>{{selected.name}}</h2>
         <p>{{selected.description}}</p>
       </div>
+      <i class="fa-solid fa-dragon bf-hero-watermark"></i>
     </header>
 
     <div class="bf-params">
@@ -40,8 +41,13 @@
                value="{{value}}" step="any" />
         {{/if}}
         {{#if isColor}}
-        <input type="text" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
-               value="{{value}}" placeholder="#ff5a1f" />
+        <input type="color" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
+               value="{{value}}" class="bf-color" />
+        {{/if}}
+        {{#if isSelect}}
+        <select id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}">
+          {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
         {{/if}}
         {{#if isBoolean}}
         <label class="bf-switch">
@@ -53,6 +59,33 @@
         {{#if hint}}<p class="bf-hint">{{hint}}</p>{{/if}}
       </div>
       {{/each}}
+    </div>
+
+    <div class="bf-section-bar"><i class="fa-solid fa-layer-group"></i>{{localize "BOSSFORGE.FxCatalog.StepsSection"}}</div>
+    <p class="bf-context">{{localize "BOSSFORGE.FxCatalog.StepsHint"}}</p>
+    <div class="bf-steps">
+      {{#each steps}}
+      <div class="bf-step-chip">
+        <span class="bf-step-order">{{order}}</span>
+        <i class="{{icon}}"></i>
+        <span class="bf-step-name">{{name}}</span>
+        <label class="bf-step-delay">{{localize "BOSSFORGE.FxCatalog.StepAnchor"}}
+          <select name="stepAt" data-index="{{index}}">
+            {{#each anchors}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+          </select>
+        </label>
+        <label class="bf-step-delay">{{localize "BOSSFORGE.FxCatalog.StepDelay"}}
+          <input type="number" name="stepDelay" data-index="{{index}}" value="{{delay}}" step="100" min="0" />
+        </label>
+        <button type="button" class="bf-icon-button" data-action="removeStep" data-index="{{index}}"
+                data-tooltip="{{localize 'BOSSFORGE.FxCatalog.RemoveStep'}}">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      {{/each}}
+      <button type="button" class="bf-add-step" data-action="addStep">
+        <i class="fa-solid fa-plus"></i>{{localize "BOSSFORGE.FxCatalog.AddStep"}}
+      </button>
     </div>
 
     <div class="bf-section-bar"><i class="fa-solid fa-stamp"></i>{{localize "BOSSFORGE.FxCatalog.ApplySection"}}</div>

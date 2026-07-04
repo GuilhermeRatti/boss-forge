@@ -39,6 +39,81 @@ export function describePreset(name) {
 }
 
 /**
+ * Normalize an FX flag config into a list of steps.
+ * Accepted shapes: {preset, options, delay?}, an array of those, or
+ * {steps: [...]}. Returns [] for anything else.
+ * @param {object|Array} config
+ * @returns {Array<{preset: string, options?: object, delay?: number}>}
+ */
+export function normalizeFxSteps(config) {
+  if (!config) return [];
+  const steps = Array.isArray(config) ? config : (Array.isArray(config.steps) ? config.steps : [config]);
+  return steps.filter(s => s && typeof s.preset === "string");
+}
+
+/**
+ * Play an FX config — a single {preset, options} or a composition of steps.
+ * Steps are SCHEDULED, not serialized: each step's `delay` (ms) is relative
+ * to the previous step's start, so delay 0 overlaps two animations and a
+ * chain of delays staggers them. Each step may anchor independently via
+ * `at`: "boss" (the source token), "targets" (the current targets) or
+ * unset (inherit the context's default locations). Never throws.
+ * @param {object|Array} config
+ * @param {object} [context]  { locations, source, targets }
+ * @returns {Promise<boolean>} whether at least one step played
+ */
+export async function playFx(config, context = {}) {
+  const steps = normalizeFxSteps(config);
+  if (!steps.length) return false;
+  const { locations = [], source, targets } = context;
+
+  let offset = 0;
+  const runs = steps.map(step => {
+    if (typeof step.delay === "number" && step.delay > 0) offset += step.delay;
+    const at = step.at ?? step.options?.at;
+    const stepLocations = at === "targets"
+      ? (targets?.length ? targets : locations)
+      : at === "boss"
+        ? (source ? [source] : locations)
+        : locations;
+    const options = { ...(step.options ?? {}) };
+    delete options.at;
+    const when = offset;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        playPreset(step.preset, { ...options, locations: stepLocations, source }).then(resolve);
+      }, when);
+    });
+  });
+
+  const results = await Promise.all(runs);
+  return results.some(Boolean);
+}
+
+/**
+ * Validate a config for storage in an FX flag. Validates the RAW steps (not
+ * the normalized list) so malformed entries in a mixed array are rejected
+ * instead of silently dropped. Throws with a helpful message.
+ * @param {object|Array} config
+ */
+export function assertValidFxConfig(config) {
+  const raw = Array.isArray(config)
+    ? config
+    : (Array.isArray(config?.steps) ? config.steps : [config]);
+  if (!raw.length) {
+    throw new Error(`FX config must be {preset, options} or a non-empty array of steps. Available presets: ${listPresets().join(", ")}`);
+  }
+  for (const step of raw) {
+    if (!step || typeof step.preset !== "string") {
+      throw new Error("FX config: each step must be an object {preset, options?, delay?, at?} with a string preset.");
+    }
+    if (!presetExists(step.preset)) {
+      throw new Error(`Unknown preset "${step.preset}". Available: ${listPresets().join(", ")}`);
+    }
+  }
+}
+
+/**
  * Play a named preset. Never throws: FX must not break the mechanics
  * that triggered them.
  * @param {string} name       Preset name (see listPresets()).

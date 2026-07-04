@@ -1,40 +1,100 @@
 import { newSequence, validateFile } from "../helpers.mjs";
 
 /**
- * Asset-free area warning: a colored circle drawn under the tokens for
- * `duration` ms; when `file` is given, the impact lands as the warning ends.
- * The radius is in grid squares.
+ * Asset-free area warning drawn under the tokens. Three forms:
+ * - "circle": a circle at each location (radius in grid squares).
+ * - "cone": a cone anchored on the source (the boss), pointing at each
+ *   location — dragon breath telegraphs. Aperture via `angle`.
+ * - "line": a thin rectangle from the source toward each location.
+ * When `file` is given, the payoff lands as the warning expires: at the
+ * location for circles, stretched source→target for cones and lines.
  */
+
+function directionBetween(from, to) {
+  return Math.atan2(to.y - from.y, to.x - from.x);
+}
+
+function centerOf(ref) {
+  const obj = ref?.object ?? ref;
+  return obj?.center ?? { x: obj?.x ?? 0, y: obj?.y ?? 0 };
+}
+
+function conePoints(direction, lengthPx, angleDeg, segments = 12) {
+  const half = (angleDeg * Math.PI / 180) / 2;
+  const points = [[0, 0]];
+  for (let i = 0; i <= segments; i++) {
+    const a = direction - half + (i / segments) * (2 * half);
+    points.push([Math.cos(a) * lengthPx, Math.sin(a) * lengthPx]);
+  }
+  return points;
+}
+
+function linePoints(direction, lengthPx, widthPx) {
+  const half = widthPx / 2;
+  const cos = Math.cos(direction);
+  const sin = Math.sin(direction);
+  // Perpendicular offsets for the rectangle corners
+  const px = Math.cos(direction + Math.PI / 2) * half;
+  const py = Math.sin(direction + Math.PI / 2) * half;
+  return [
+    [px, py],
+    [cos * lengthPx + px, sin * lengthPx + py],
+    [cos * lengthPx - px, sin * lengthPx - py],
+    [-px, -py]
+  ];
+}
+
 export default {
   id: "telegraph",
   params: [
+    { key: "form", type: "select", options: ["circle", "cone", "line"], default: "circle" },
     { key: "radius", type: "number", default: 2 },
+    { key: "length", type: "number", default: 6 },
+    { key: "angle", type: "number", default: 60 },
+    { key: "width", type: "number", default: 2 },
     { key: "color", type: "color", default: "#ff4d00" },
     { key: "duration", type: "number", default: 1600 },
     { key: "file", type: "file" },
-    { key: "scale", type: "number" }
+    { key: "scale", type: "number" },
+    { key: "delay", type: "number" }
   ],
-  async play({ radius = 2, color = "#ff4d00", duration = 1600, file, scale, locations = [] } = {}) {
+  async play({
+    form = "circle", radius = 2, length = 6, angle = 60, width = 2,
+    color = "#ff4d00", duration = 1600, file, scale, delay,
+    locations = [], source
+  } = {}) {
     if (!locations.length) return false;
+    const grid = canvas.grid.size;
+    const hasFile = !!file && validateFile(file);
+    const baseDelay = typeof delay === "number" ? Math.max(0, delay) : 0;
+    const anchor = source ?? locations[0];
+    const anchorCenter = centerOf(anchor);
     const sequence = newSequence();
+
     for (const location of locations) {
-      sequence.effect()
-        .atLocation(location)
-        .shape("circle", {
-          radius,
-          gridUnits: true,
-          fillColor: color,
-          fillAlpha: 0.25,
-          lineSize: 4,
-          lineColor: color
-        })
+      const shapeOptions = { fillColor: color, fillAlpha: 0.25, lineSize: 4, lineColor: color };
+      const warning = sequence.effect()
+        .delay(baseDelay)
         .duration(duration)
         .fadeIn(150)
         .fadeOut(250)
         .belowTokens(true);
-      if (file && validateFile(file)) {
-        const impact = sequence.effect().file(file).atLocation(location).delay(duration);
-        if (typeof scale === "number") impact.scale(scale);
+
+      if (form === "cone" || form === "line") {
+        const direction = directionBetween(anchorCenter, centerOf(location));
+        const points = form === "cone"
+          ? conePoints(direction, length * grid, angle)
+          : linePoints(direction, length * grid, width * grid);
+        warning.atLocation(anchor).shape("polygon", { ...shapeOptions, points });
+      } else {
+        warning.atLocation(location).shape("circle", { ...shapeOptions, radius, gridUnits: true });
+      }
+
+      if (hasFile) {
+        const payoff = sequence.effect().file(file).delay(baseDelay + duration);
+        if (form === "cone" || form === "line") payoff.atLocation(anchor).stretchTo(location);
+        else payoff.atLocation(location);
+        if (typeof scale === "number") payoff.scale(scale);
       }
     }
     await sequence.play();

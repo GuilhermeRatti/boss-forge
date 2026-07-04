@@ -91,9 +91,16 @@
       "AppliedLegres": "FX forged onto {name}'s legendary resistance.",
       "AppliedLair": "FX forged onto {name}'s lair activation.",
       "Copy": "Copy code",
-      "CopyHint": "Copies an api.fx.play(...) macro snippet with the current parameters.",
+      "CopyHint": "Copies an api.fx macro snippet with the current parameters (or the whole composition).",
       "Copied": "Macro snippet copied to clipboard.",
-      "OpenDatabase": "Browse the Sequencer database"
+      "OpenDatabase": "Browse the Sequencer database",
+      "StepsSection": "Composition",
+      "StepsHint": "Chain presets into one epic action: set up a preset above and add it as a step. Steps play in order; each delay is in ms after the previous step starts. With steps present, Preview/Apply use the whole composition.",
+      "AddStep": "Add current preset as a step",
+      "RemoveStep": "Remove step",
+      "StepDelay": "delay (ms)",
+      "StepAnchor": "anchor",
+      "AtInherit": "Inherit"
     },
     "FxPresets": {
       "impact": { "Name": "Impact", "Tag": "single hit", "Description": "One effect at each target location — the bread-and-butter strike." },
@@ -106,6 +113,14 @@
       "file": { "Label": "Effect file", "Hint": "Sequencer database path (jb2a…, blfx…) or a direct file path." },
       "scale": { "Label": "Scale", "Hint": "" },
       "delay": { "Label": "Delay (ms)", "Hint": "" },
+      "form": {
+        "Label": "Shape",
+        "Hint": "Cones and lines anchor on the boss and point at each target — the payoff file stretches along them (breaths!).",
+        "Options": { "circle": "Circle", "cone": "Cone", "line": "Line" }
+      },
+      "length": { "Label": "Length (squares)", "Hint": "Cone/line reach." },
+      "angle": { "Label": "Cone angle (°)", "Hint": "" },
+      "width": { "Label": "Line width (squares)", "Hint": "" },
       "radius": { "Label": "Radius (squares)", "Hint": "" },
       "color": { "Label": "Warning color", "Hint": "" },
       "duration": { "Label": "Warning duration (ms)", "Hint": "" },

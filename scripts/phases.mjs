@@ -1,7 +1,7 @@
 import { MODULE_ID, SETTINGS, FLAGS } from "./constants.mjs";
 import { log } from "./logger.mjs";
 import { escapeHtml, actorSides, whisperGM } from "./utils.mjs";
-import { playPreset, presetExists, listPresets } from "./fx/presets.mjs";
+import { playFx, assertValidFxConfig } from "./fx/presets.mjs";
 
 /**
  * HP-phase orchestration (M4): bosses configured with percentage thresholds
@@ -160,11 +160,7 @@ async function playPhaseFx(actor, phase) {
     log.debug(`Phase FX skipped for ${actor.name}: no active token.`);
     return;
   }
-  const sequence = Array.isArray(phase.fx) ? phase.fx : [phase.fx];
-  for (const fx of sequence) {
-    if (!fx?.preset) continue;
-    await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token], source: token });
-  }
+  await playFx(phase.fx, { locations: [token], source: token });
 }
 
 async function togglePhaseEffects(actor, phase) {
@@ -201,12 +197,7 @@ function validatePhases(phases, direction) {
     if (typeof t !== "number" || !(t > 0) || !(t <= max)) {
       throw new Error(`setPhases: each phase needs a threshold percentage in (0, ${direction === "up" ? "100]" : "100)"} (got ${t}).`);
     }
-    const sequence = phase.fx ? (Array.isArray(phase.fx) ? phase.fx : [phase.fx]) : [];
-    for (const fx of sequence) {
-      if (fx?.preset && !presetExists(fx.preset)) {
-        throw new Error(`setPhases: unknown FX preset "${fx.preset}". Available: ${listPresets().join(", ")}`);
-      }
-    }
+    if (phase.fx) assertValidFxConfig(phase.fx);
     for (const list of [phase.effects?.enable, phase.effects?.disable]) {
       if (list !== undefined && (!Array.isArray(list) || list.some(n => typeof n !== "string"))) {
         throw new Error("setPhases: effects.enable/disable must be arrays of effect names.");

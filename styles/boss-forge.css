@@ -1,72 +1,137 @@
 /* ============================================================
- * Boss Forge — visual identity: "the Forge"
- * Charcoal iron + molten ember. Chamfered (cut) corners evoke
- * forged metal — deliberately distinct from rounded-pill UIs.
+ * Boss Forge — visual identity v2: "molten iron"
+ * Forged metal: embossed steel plates with rivets, chamfered
+ * corners, and living molten seams — vivid lava reds flowing
+ * through the cracks. Distinct from any rounded-pill UI.
  * ============================================================ */
 
 .boss-forge-app,
-.boss-forge-legendary {
-  --bf-bg: #1b1d21;
-  --bf-bg-raised: #24272d;
-  --bf-bg-inset: #15171a;
-  --bf-steel: #3a3f47;
-  --bf-steel-light: #4d535d;
-  --bf-text: #d8d5cf;
-  --bf-text-dim: #918e98;
+.application.boss-forge-legendary {
+  --bf-bg: #17181c;
+  --bf-bg-raised: #23252b;
+  --bf-bg-inset: #101114;
+  --bf-steel: #43454d;
+  --bf-steel-light: #5c5f6a;
+  --bf-steel-dark: #0a0b0d;
+  --bf-text: #e2ddd4;
+  --bf-text-dim: #97939c;
+  --bf-lava: #ff2d00;
   --bf-ember: #ff5a1f;
-  --bf-ember-soft: rgba(255, 90, 31, 0.35);
-  --bf-ember-faint: rgba(255, 90, 31, 0.12);
-  --bf-heat: #ffb347;
-  --bf-chamfer: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  --bf-heat: #ffb300;
+  --bf-white-hot: #ffe8c2;
+  --bf-ember-soft: rgba(255, 61, 0, 0.45);
+  --bf-ember-faint: rgba(255, 61, 0, 0.14);
+  --bf-molten: linear-gradient(100deg, #7a1400, var(--bf-lava) 25%, var(--bf-heat) 50%, var(--bf-lava) 75%, #7a1400);
+  --bf-emboss: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  --bf-iron-texture: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.015) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(25deg, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 7px);
+  --bf-chamfer: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
   --bf-chamfer-sm: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  --bf-rivets: radial-gradient(circle 2.5px at 7px 7px, var(--bf-steel-light) 40%, var(--bf-steel-dark) 60%, transparent 65%),
+    radial-gradient(circle 2.5px at calc(100% - 7px) 7px, var(--bf-steel-light) 40%, var(--bf-steel-dark) 60%, transparent 65%),
+    radial-gradient(circle 2.5px at 7px calc(100% - 7px), var(--bf-steel-light) 40%, var(--bf-steel-dark) 60%, transparent 65%),
+    radial-gradient(circle 2.5px at calc(100% - 7px) calc(100% - 7px), var(--bf-steel-light) 40%, var(--bf-steel-dark) 60%, transparent 65%);
 }
 
 body.theme-light .boss-forge-app,
-body.theme-light .boss-forge-legendary {
-  --bf-bg: #edeae4;
-  --bf-bg-raised: #f7f5f0;
-  --bf-bg-inset: #e0dcd4;
-  --bf-steel: #b9b2a6;
-  --bf-steel-light: #a39c90;
-  --bf-text: #2b2823;
+body.theme-light .application.boss-forge-legendary {
+  --bf-bg: #e9e4db;
+  --bf-bg-raised: #f5f1e9;
+  --bf-bg-inset: #d9d3c7;
+  --bf-steel: #a9a094;
+  --bf-steel-light: #c4bcb0;
+  --bf-steel-dark: #6d6559;
+  --bf-text: #29251f;
   --bf-text-dim: #6d675e;
-  --bf-ember: #d43d05;
-  --bf-ember-soft: rgba(212, 61, 5, 0.30);
-  --bf-ember-faint: rgba(212, 61, 5, 0.10);
-  --bf-heat: #a34a00;
+  --bf-lava: #d42600;
+  --bf-ember: #cc4310;
+  --bf-heat: #a35e00;
+  --bf-white-hot: #7a1400;
+  --bf-ember-soft: rgba(212, 38, 0, 0.35);
+  --bf-ember-faint: rgba(212, 38, 0, 0.10);
+  --bf-emboss: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(0, 0, 0, 0.18);
 }
 
-/* ---------- Legendary/lair prompt dialogs (M1/M3) ---------- */
+@keyframes bf-molten-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes bf-forge-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--bf-ember-soft), var(--bf-emboss); }
+  50% { box-shadow: 0 0 18px var(--bf-ember-soft), 0 0 4px var(--bf-ember-faint), var(--bf-emboss); }
+}
+
+/* ---------- Prompt dialogs (M1 legendary / M3 lair / legres) ---------- */
+
+.application.boss-forge-legendary .window-header {
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg));
+  border-bottom: 1px solid var(--bf-steel-dark);
+  position: relative;
+}
+
+.application.boss-forge-legendary .window-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--bf-molten);
+  background-size: 200% 100%;
+  animation: bf-molten-flow 6s linear infinite;
+}
+
+.application.boss-forge-legendary .window-content {
+  background: var(--bf-bg) ;
+  background-image: var(--bf-iron-texture);
+  color: var(--bf-text);
+}
 
 .boss-forge-legendary .form-footer {
   flex-direction: column;
   align-items: stretch;
+  gap: 6px;
 }
 
 .boss-forge-legendary .form-footer button {
   width: 100%;
   height: auto;
-  min-height: 2em;
+  min-height: 2.1em;
   justify-content: flex-start;
   text-align: left;
   white-space: normal;
   line-height: 1.25;
-  padding: 4px 10px;
-  clip-path: var(--bf-chamfer-sm);
+  padding: 5px 12px;
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg-inset));
+  color: var(--bf-text);
   border: 1px solid var(--bf-steel);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .boss-forge-legendary .form-footer button:hover {
-  border-color: var(--bf-ember);
-  box-shadow: 0 0 8px var(--bf-ember-soft);
+  border-color: var(--bf-lava);
+  color: var(--bf-white-hot);
+  box-shadow: 0 0 12px var(--bf-ember-soft), var(--bf-emboss);
+}
+
+.boss-forge-legendary .form-footer button i {
+  color: var(--bf-ember);
 }
 
 /* ---------- FX Forge catalog ---------- */
 
+.boss-forge-app .window-header {
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg));
+  border-bottom: 1px solid var(--bf-steel-dark);
+}
+
 .boss-forge-app .window-content {
   padding: 0;
   background: var(--bf-bg);
+  background-image: var(--bf-iron-texture);
   color: var(--bf-text);
 }
 
@@ -76,47 +141,52 @@ body.theme-light .boss-forge-legendary {
   min-height: 0;
 }
 
-/* Left rail: preset list */
+/* Left rail: riveted iron plate */
 .boss-forge-app .bf-rail {
-  flex: 0 0 232px;
+  flex: 0 0 236px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   padding: 12px 10px;
   background: var(--bf-bg-inset);
-  border-right: 1px solid var(--bf-steel);
+  background-image: var(--bf-iron-texture);
+  border-right: 2px solid var(--bf-steel-dark);
+  box-shadow: inset -1px 0 0 var(--bf-steel);
   overflow-y: auto;
 }
 
 .boss-forge-app .bf-rail-header {
   font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--bf-text-dim);
+  color: var(--bf-heat);
   margin: 0 2px 4px;
+  text-shadow: 0 0 8px var(--bf-ember-faint);
 }
 
 .boss-forge-app .bf-preset-card {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  background: var(--bf-bg-raised);
+  padding: 9px 12px;
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg-inset));
+  background-blend-mode: normal;
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 
 .boss-forge-app .bf-preset-card:hover {
   border-color: var(--bf-ember);
-  box-shadow: inset 0 0 12px var(--bf-ember-faint);
+  box-shadow: inset 0 0 14px var(--bf-ember-faint), var(--bf-emboss);
 }
 
 .boss-forge-app .bf-preset-card.active {
-  border-color: var(--bf-ember);
-  background: linear-gradient(135deg, var(--bf-ember-faint), var(--bf-bg-raised) 60%);
-  box-shadow: inset 0 0 16px var(--bf-ember-faint), 0 0 6px var(--bf-ember-soft);
+  border-color: var(--bf-lava);
+  background: linear-gradient(135deg, var(--bf-ember-faint), var(--bf-bg-raised) 55%);
+  animation: bf-forge-pulse 3.2s ease-in-out infinite;
 }
 
 .boss-forge-app .bf-preset-card i {
@@ -124,12 +194,19 @@ body.theme-light .boss-forge-legendary {
   width: 1.4em;
   text-align: center;
   color: var(--bf-ember);
-  font-size: 1.05em;
+  font-size: 1.1em;
+  filter: drop-shadow(0 0 3px var(--bf-ember-faint));
+}
+
+.boss-forge-app .bf-preset-card.active i {
+  color: var(--bf-heat);
+  filter: drop-shadow(0 0 6px var(--bf-ember-soft));
 }
 
 .boss-forge-app .bf-preset-card .bf-preset-name {
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.1;
+  letter-spacing: 0.02em;
 }
 
 .boss-forge-app .bf-preset-card .bf-preset-tag {
@@ -147,49 +224,69 @@ body.theme-light .boss-forge-legendary {
   min-width: 0;
   overflow-y: auto;
   padding: 16px 18px;
-  gap: 14px;
+  gap: 13px;
 }
 
-/* Hero */
+/* Hero: molten seam + ghosted dragon */
 .boss-forge-app .bf-hero {
   display: flex;
   align-items: center;
   gap: 14px;
   padding-bottom: 12px;
-  border-bottom: 2px solid var(--bf-steel);
   position: relative;
+  overflow: hidden;
 }
 
 .boss-forge-app .bf-hero::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -2px;
-  width: 120px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--bf-ember), transparent);
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--bf-molten);
+  background-size: 200% 100%;
+  animation: bf-molten-flow 5s linear infinite;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+.boss-forge-app .bf-hero-watermark {
+  position: absolute;
+  right: -6px;
+  top: -14px;
+  font-size: 6.2em;
+  color: var(--bf-ember);
+  opacity: 0.07;
+  pointer-events: none;
+  transform: rotate(-8deg);
 }
 
 .boss-forge-app .bf-hero-icon {
   flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
-  font-size: 1.6em;
+  font-size: 1.7em;
   color: var(--bf-heat);
-  background: radial-gradient(circle at 30% 30%, var(--bf-ember-faint), var(--bf-bg-inset));
+  background: radial-gradient(circle at 50% 65%, var(--bf-ember-faint), var(--bf-bg-inset) 75%), var(--bf-rivets);
+  background-blend-mode: screen, normal;
   border: 1px solid var(--bf-steel-light);
   clip-path: var(--bf-chamfer);
+  box-shadow: var(--bf-emboss);
+  text-shadow: 0 0 12px var(--bf-ember-soft);
 }
+
+.boss-forge-app .bf-hero-text { position: relative; }
 
 .boss-forge-app .bf-hero h2 {
   margin: 0;
   border: none;
   font-family: "Modesto Condensed", "Signika", serif;
-  font-size: 1.7rem;
-  letter-spacing: 0.03em;
-  color: var(--bf-text);
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+  color: var(--bf-white-hot);
+  text-shadow: 0 0 14px var(--bf-ember-faint);
 }
 
 .boss-forge-app .bf-hero p {
@@ -197,6 +294,7 @@ body.theme-light .boss-forge-legendary {
   color: var(--bf-text-dim);
   font-size: 0.85rem;
   line-height: 1.35;
+  max-width: 46ch;
 }
 
 /* Params form */
@@ -208,14 +306,15 @@ body.theme-light .boss-forge-legendary {
 
 .boss-forge-app .bf-field {
   display: grid;
-  grid-template-columns: 170px 1fr;
+  grid-template-columns: 176px 1fr;
   align-items: center;
   gap: 2px 12px;
 }
 
 .boss-forge-app .bf-field > label {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.86rem;
+  letter-spacing: 0.01em;
 }
 
 .boss-forge-app .bf-field .bf-hint {
@@ -233,6 +332,7 @@ body.theme-light .boss-forge-legendary {
   color: var(--bf-text);
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
   padding: 5px 10px;
   height: auto;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -240,9 +340,19 @@ body.theme-light .boss-forge-legendary {
 
 .boss-forge-app .bf-field input:focus,
 .boss-forge-app .bf-field select:focus {
-  border-color: var(--bf-ember);
-  box-shadow: 0 0 6px var(--bf-ember-soft);
+  border-color: var(--bf-lava);
+  box-shadow: 0 0 10px var(--bf-ember-soft), var(--bf-emboss);
   outline: none;
+}
+
+.boss-forge-app .bf-field input.bf-color {
+  width: 64px;
+  height: 30px;
+  padding: 2px;
+  background: var(--bf-bg-inset);
+  border: 1px solid var(--bf-steel);
+  clip-path: var(--bf-chamfer-sm);
+  cursor: pointer;
 }
 
 .boss-forge-app .bf-file-row {
@@ -251,9 +361,7 @@ body.theme-light .boss-forge-legendary {
   align-items: center;
 }
 
-.boss-forge-app .bf-file-row input {
-  flex: 1 1 auto;
-}
+.boss-forge-app .bf-file-row input { flex: 1 1 auto; }
 
 .boss-forge-app .bf-icon-button {
   flex: 0 0 auto;
@@ -261,31 +369,28 @@ body.theme-light .boss-forge-legendary {
   height: 30px;
   display: grid;
   place-items: center;
-  background: var(--bf-bg-raised);
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg-inset));
   color: var(--bf-heat);
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
   cursor: pointer;
 }
 
 .boss-forge-app .bf-icon-button:hover {
-  border-color: var(--bf-ember);
-  box-shadow: 0 0 6px var(--bf-ember-soft);
+  border-color: var(--bf-lava);
+  box-shadow: 0 0 8px var(--bf-ember-soft), var(--bf-emboss);
 }
 
-/* Ember toggle switch */
+/* Ember switch */
 .boss-forge-app .bf-switch {
   position: relative;
   display: inline-block;
-  width: 42px;
+  width: 44px;
   height: 22px;
 }
 
-.boss-forge-app .bf-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.boss-forge-app .bf-switch input { opacity: 0; width: 0; height: 0; }
 
 .boss-forge-app .bf-switch .bf-slider {
   position: absolute;
@@ -293,6 +398,7 @@ body.theme-light .boss-forge-legendary {
   background: var(--bf-bg-inset);
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
@@ -305,38 +411,133 @@ body.theme-light .boss-forge-legendary {
   height: 14px;
   background: var(--bf-steel-light);
   clip-path: var(--bf-chamfer-sm);
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .boss-forge-app .bf-switch input:checked + .bf-slider {
   background: var(--bf-ember-faint);
-  border-color: var(--bf-ember);
+  border-color: var(--bf-lava);
 }
 
 .boss-forge-app .bf-switch input:checked + .bf-slider::before {
-  transform: translateX(20px);
-  background: var(--bf-ember);
-  box-shadow: 0 0 6px var(--bf-ember-soft);
+  transform: translateX(22px);
+  background: linear-gradient(160deg, var(--bf-heat), var(--bf-lava));
+  box-shadow: 0 0 8px var(--bf-ember-soft);
 }
 
-/* Apply section */
+/* Section bars: stamped plates with rivets and a molten left edge */
 .boss-forge-app .bf-section-bar {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 7px 18px;
   margin-top: 4px;
-  background: linear-gradient(90deg, var(--bf-bg-raised), var(--bf-bg-inset));
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg-inset)), var(--bf-rivets);
+  background-blend-mode: normal;
   border: 1px solid var(--bf-steel);
-  border-left: 3px solid var(--bf-ember);
   clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
   font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--bf-text-dim);
+  position: relative;
+}
+
+.boss-forge-app .bf-section-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--bf-molten);
+  background-size: 100% 300%;
+  animation: bf-molten-flow 7s linear infinite;
+}
+
+.boss-forge-app .bf-section-bar i { color: var(--bf-ember); }
+
+/* Composition steps */
+.boss-forge-app .bf-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.boss-forge-app .bf-step-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg-inset));
+  border: 1px solid var(--bf-steel);
+  clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
+}
+
+.boss-forge-app .bf-step-order {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: var(--bf-white-hot);
+  background: linear-gradient(160deg, var(--bf-ember), #a32100);
+  clip-path: var(--bf-chamfer-sm);
+}
+
+.boss-forge-app .bf-step-chip i { color: var(--bf-ember); }
+
+.boss-forge-app .bf-step-chip .bf-step-name {
+  font-weight: 600;
+  flex: 1 1 auto;
+}
+
+.boss-forge-app .bf-step-delay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
   color: var(--bf-text-dim);
 }
 
+.boss-forge-app .bf-step-delay input,
+.boss-forge-app .bf-step-delay select {
+  width: 76px;
+  background: var(--bf-bg-inset);
+  color: var(--bf-text);
+  border: 1px solid var(--bf-steel);
+  clip-path: var(--bf-chamfer-sm);
+  padding: 3px 8px;
+  height: auto;
+}
+
+.boss-forge-app .bf-step-delay select { width: auto; max-width: 120px; }
+
+.boss-forge-app .bf-add-step {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: transparent;
+  color: var(--bf-text-dim);
+  border: 1px dashed var(--bf-steel-light);
+  clip-path: var(--bf-chamfer-sm);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.boss-forge-app .bf-add-step:hover {
+  color: var(--bf-heat);
+  border-color: var(--bf-ember);
+}
+
+/* Apply row */
 .boss-forge-app .bf-apply-row {
   display: flex;
   gap: 8px;
@@ -349,6 +550,7 @@ body.theme-light .boss-forge-legendary {
   color: var(--bf-text);
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer-sm);
+  box-shadow: var(--bf-emboss);
   padding: 5px 10px;
   height: auto;
   flex: 1 1 140px;
@@ -357,11 +559,11 @@ body.theme-light .boss-forge-legendary {
 .boss-forge-app .bf-context {
   font-size: 0.78rem;
   color: var(--bf-text-dim);
+  margin: 0;
+  line-height: 1.35;
 }
 
-.boss-forge-app .bf-context strong {
-  color: var(--bf-heat);
-}
+.boss-forge-app .bf-context strong { color: var(--bf-heat); }
 
 /* Footer actions */
 .boss-forge-app .bf-actions {
@@ -370,6 +572,7 @@ body.theme-light .boss-forge-legendary {
   margin-top: auto;
   padding-top: 12px;
   border-top: 1px solid var(--bf-steel);
+  position: relative;
 }
 
 .boss-forge-app .bf-actions button {
@@ -377,32 +580,43 @@ body.theme-light .boss-forge-legendary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 16px;
-  background: var(--bf-bg-raised);
+  padding: 7px 18px;
+  background: linear-gradient(180deg, var(--bf-bg-raised), var(--bf-bg-inset));
   color: var(--bf-text);
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer);
-  font-weight: 600;
+  box-shadow: var(--bf-emboss);
+  font-weight: 700;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
 }
 
-.boss-forge-app .bf-actions button:hover {
-  border-color: var(--bf-ember);
-  box-shadow: 0 0 10px var(--bf-ember-soft);
+.boss-forge-app .bf-actions button:hover:not(:disabled) {
+  border-color: var(--bf-lava);
+  color: var(--bf-white-hot);
+  box-shadow: 0 0 12px var(--bf-ember-soft), var(--bf-emboss);
+}
+
+.boss-forge-app .bf-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .boss-forge-app .bf-actions button.bf-primary {
-  background: linear-gradient(160deg, var(--bf-ember), #c23a08);
+  background: var(--bf-molten);
+  background-size: 220% 100%;
+  animation: bf-molten-flow 8s linear infinite;
   color: #fff;
   border-color: var(--bf-heat);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
 }
 
-.boss-forge-app .bf-actions button.bf-primary:hover {
-  box-shadow: 0 0 14px var(--bf-ember-soft);
-}
+.boss-forge-app .bf-actions .bf-spacer { flex: 1 1 auto; }
 
-.boss-forge-app .bf-actions .bf-spacer {
-  flex: 1 1 auto;
+/* Accessibility: stop the lava when the user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .boss-forge-app *,
+  .application.boss-forge-legendary * {
+    animation: none !important;
+  }
 }

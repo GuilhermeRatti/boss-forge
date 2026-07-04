@@ -1,6 +1,6 @@
 import { MODULE_ID, FLAGS } from "../constants.mjs";
 import { log } from "../logger.mjs";
-import { playPreset, presetExists, listPresets } from "../fx/presets.mjs";
+import { playFx, assertValidFxConfig } from "../fx/presets.mjs";
 
 /**
  * Macro/API helpers to attach an FX preset to a legendary action item
@@ -9,13 +9,13 @@ import { playPreset, presetExists, listPresets } from "../fx/presets.mjs";
  */
 
 /**
+ * Attach FX to an item: a single preset (name + options) or a composition —
+ * an array of steps [{preset, options, delay?}] played in order, each delay
+ * in ms relative to the previous step's start.
  * @param {Item} item
- * @param {string} preset                       Preset name (M1: "impact").
- * @param {object} [options]                    Preset options.
- * @param {string} options.file                 Sequencer database path or file path.
- * @param {"boss"|"targets"} [options.at]       Where to play (default "boss").
- * @param {number} [options.scale]
- * @param {number} [options.delay]
+ * @param {string|Array} preset                 Preset name, or an array of steps.
+ * @param {object} [options]                    Preset options (single form);
+ *   `options.at` ("boss"|"targets") applies to compositions too.
  * @returns {Promise<Item>}
  */
 export async function setItemFx(item, preset, options = {}) {
@@ -26,10 +26,14 @@ export async function setItemFx(item, preset, options = {}) {
     );
   }
   if (!(item instanceof Item)) throw new Error("setItemFx: first argument must be an Item document.");
-  if (!presetExists(preset)) {
-    throw new Error(`setItemFx: unknown preset "${preset}". Available: ${listPresets().join(", ")}`);
-  }
-  return item.setFlag(MODULE_ID, FLAGS.FX, { preset, options });
+  const config = Array.isArray(preset)
+    ? { steps: preset, at: options.at }
+    : { preset, options };
+  assertValidFxConfig(Array.isArray(preset) ? preset : config);
+  // Foundry merges object flags on setFlag; unset first so shape switches
+  // (single <-> composition) and dropped option keys never leave residue.
+  await item.unsetFlag(MODULE_ID, FLAGS.FX);
+  return item.setFlag(MODULE_ID, FLAGS.FX, config);
 }
 
 /**
@@ -56,15 +60,23 @@ export function getItemFx(item) {
  */
 export async function playItemFx(item, combatant) {
   const fx = getItemFx(item);
-  if (!fx?.preset) return;
-  const { at, ...options } = fx.options ?? {};
+  if (!fx) return;
+  const at = fx.at ?? fx.options?.at;
   const locations = resolveLocations(at, combatant);
   if (!locations.length) {
     log.debug(`FX: no locations resolved for "${item.name}" (at: ${at}).`);
     return;
   }
   const source = combatant.token?.object ?? combatant.token;
-  await playPreset(fx.preset, { ...options, locations, source });
+  const userTargets = [...game.user.targets];
+  const config = fx.steps
+    ? fx.steps
+    : { preset: fx.preset, options: (({ at: _at, ...rest }) => rest)(fx.options ?? {}) };
+  await playFx(config, {
+    locations,
+    source,
+    targets: userTargets.length ? userTargets : undefined
+  });
 }
 
 /**

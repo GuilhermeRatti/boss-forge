@@ -1,6 +1,6 @@
 import { MODULE_ID } from "../constants.mjs";
 import { log } from "../logger.mjs";
-import { listPresets, describePreset, playPreset } from "./presets.mjs";
+import { listPresets, describePreset, playPreset, playFx } from "./presets.mjs";
 import { setItemFx } from "../legendary/item-fx.mjs";
 import { setActorLegresFx } from "../legendary/resistance.mjs";
 import { setActorLairFx } from "../lair.mjs";
@@ -18,8 +18,9 @@ const PRESET_ICONS = {
 
 /**
  * The FX Forge: browsable preset catalog with parameter forms generated from
- * the registry metadata, live preview on the controlled token, and one-click
- * apply onto the existing FX flags (legendary/lair items, legres, lair mode).
+ * the registry metadata, a composition tray (ordered steps with per-step
+ * delays), live preview on the controlled token, and one-click apply onto
+ * the existing FX flags (legendary/lair items, legres, lair mode).
  */
 export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
@@ -30,13 +31,15 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
       icon: "fa-solid fa-fire-flame-curved",
       resizable: true
     },
-    position: { width: 840, height: 600 },
+    position: { width: 860, height: 640 },
     actions: {
       selectPreset: FxCatalog.#onSelectPreset,
       preview: FxCatalog.#onPreview,
       apply: FxCatalog.#onApply,
       copySnippet: FxCatalog.#onCopySnippet,
-      openDatabaseViewer: FxCatalog.#onOpenDatabaseViewer
+      openDatabaseViewer: FxCatalog.#onOpenDatabaseViewer,
+      addStep: FxCatalog.#onAddStep,
+      removeStep: FxCatalog.#onRemoveStep
     }
   };
 
@@ -46,6 +49,7 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   #selected = "impact";
   #values = {};
+  #steps = [];
 
   async _prepareContext() {
     const presets = listPresets().map(id => ({
@@ -58,17 +62,28 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const meta = describePreset(this.#selected);
     const stored = this.#values[this.#selected] ?? {};
-    const params = meta.params.map(p => ({
-      key: p.key,
-      type: p.type,
-      isFile: p.type === "file",
-      isNumber: p.type === "number",
-      isColor: p.type === "color",
-      isBoolean: p.type === "boolean",
-      label: game.i18n.localize(`BOSSFORGE.FxParams.${p.key}.Label`),
-      hint: game.i18n.localize(`BOSSFORGE.FxParams.${p.key}.Hint`),
-      value: stored[p.key] ?? p.default ?? (p.type === "boolean" ? false : "")
-    }));
+    const params = meta.params.map(p => {
+      const value = stored[p.key] ?? p.default ?? (p.type === "boolean" ? false : "");
+      return {
+        key: p.key,
+        type: p.type,
+        isFile: p.type === "file",
+        isNumber: p.type === "number",
+        isColor: p.type === "color",
+        isBoolean: p.type === "boolean",
+        isSelect: p.type === "select",
+        options: p.type === "select"
+          ? p.options.map(o => ({
+              value: o,
+              label: game.i18n.localize(`BOSSFORGE.FxParams.${p.key}.Options.${o}`),
+              selected: value === o
+            }))
+          : null,
+        label: game.i18n.localize(`BOSSFORGE.FxParams.${p.key}.Label`),
+        hint: game.i18n.localize(`BOSSFORGE.FxParams.${p.key}.Hint`),
+        value
+      };
+    });
 
     const actor = canvas.tokens.controlled[0]?.actor ?? null;
     const items = actor
@@ -87,6 +102,19 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
         description: game.i18n.localize(`BOSSFORGE.FxPresets.${this.#selected}.Description`)
       },
       params,
+      steps: this.#steps.map((s, index) => ({
+        index,
+        order: index + 1,
+        icon: PRESET_ICONS[s.preset] ?? "fa-solid fa-wand-sparkles",
+        name: game.i18n.localize(`BOSSFORGE.FxPresets.${s.preset}.Name`),
+        delay: s.delay ?? 0,
+        anchors: [
+          { value: "", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtInherit"), selected: !s.at },
+          { value: "boss", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtBoss"), selected: s.at === "boss" },
+          { value: "targets", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtTargets"), selected: s.at === "targets" }
+        ]
+      })),
+      hasSteps: this.#steps.length > 0,
       hasActor: !!actor,
       actorName: actor?.name,
       items
@@ -111,6 +139,27 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
     return options;
   }
 
+  /** Sync per-step delay and anchor inputs back into the steps state. */
+  #readStepDelays() {
+    for (const input of this.element.querySelectorAll("input[name=stepDelay]")) {
+      const step = this.#steps[Number(input.dataset.index)];
+      if (step) step.delay = Math.max(0, Number(input.value) || 0);
+    }
+    for (const select of this.element.querySelectorAll("select[name=stepAt]")) {
+      const step = this.#steps[Number(select.dataset.index)];
+      if (!step) continue;
+      if (select.value) step.at = select.value;
+      else delete step.at;
+    }
+  }
+
+  /** The composition if steps exist, else the current single-preset form. */
+  #currentConfig() {
+    this.#readStepDelays();
+    if (this.#steps.length) return this.#steps.map(s => ({ ...s }));
+    return { preset: this.#selected, options: this.#readForm() };
+  }
+
   #previewContext() {
     const controlled = canvas.tokens.controlled;
     if (!controlled.length) {
@@ -119,26 +168,47 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const source = controlled[0];
     const targets = [...game.user.targets];
-    return { source, locations: targets.length ? targets : [source] };
+    return {
+      source,
+      locations: targets.length ? targets : [source],
+      targets: targets.length ? targets : undefined
+    };
   }
 
   static async #onSelectPreset(event, target) {
     this.#readForm();
+    this.#readStepDelays();
     this.#selected = target.dataset.preset;
+    await this.render();
+  }
+
+  static async #onAddStep() {
+    this.#readStepDelays();
+    this.#steps.push({ preset: this.#selected, options: this.#readForm(), delay: this.#steps.length ? 600 : 0 });
+    await this.render();
+  }
+
+  static async #onRemoveStep(event, target) {
+    this.#readStepDelays();
+    this.#steps.splice(Number(target.dataset.index), 1);
     await this.render();
   }
 
   static async #onPreview() {
     const context = this.#previewContext();
     if (!context) return;
-    const played = await playPreset(this.#selected, { ...this.#readForm(), ...context });
+    const config = this.#currentConfig();
+    const played = Array.isArray(config)
+      ? await playFx(config, context)
+      : await playPreset(config.preset, { ...config.options, ...context });
     if (!played) ui.notifications.warn(game.i18n.localize("BOSSFORGE.FxCatalog.PreviewFailed"));
   }
 
   static async #onApply() {
     const actor = canvas.tokens.controlled[0]?.actor;
     if (!actor) return ui.notifications.warn(game.i18n.localize("BOSSFORGE.FxCatalog.NoToken"));
-    const options = this.#readForm();
+    const config = this.#currentConfig();
+    const single = !Array.isArray(config);
     const mode = this.element.querySelector("[name=applyMode]")?.value;
     try {
       if (mode === "item") {
@@ -146,13 +216,14 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
         const item = actor.items.get(itemId);
         if (!item) return ui.notifications.warn(game.i18n.localize("BOSSFORGE.FxCatalog.NoItem"));
         const at = this.element.querySelector("[name=applyAt]")?.value ?? "boss";
-        await setItemFx(item, this.#selected, { ...options, at });
+        if (single) await setItemFx(item, config.preset, { ...config.options, at });
+        else await setItemFx(item, config, { at });
         ui.notifications.info(game.i18n.format("BOSSFORGE.FxCatalog.AppliedItem", { item: item.name }));
       } else if (mode === "legres") {
-        await setActorLegresFx(actor, this.#selected, options);
+        await setActorLegresFx(actor, single ? config.preset : config, single ? config.options : undefined);
         ui.notifications.info(game.i18n.format("BOSSFORGE.FxCatalog.AppliedLegres", { name: actor.name }));
       } else {
-        await setActorLairFx(actor, this.#selected, options);
+        await setActorLairFx(actor, single ? config.preset : config, single ? config.options : undefined);
         ui.notifications.info(game.i18n.format("BOSSFORGE.FxCatalog.AppliedLair", { name: actor.name }));
       }
     } catch (err) {
@@ -162,14 +233,23 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #onCopySnippet() {
-    const options = this.#readForm();
-    const code = [
-      `game.modules.get("boss-forge").api.fx.play("${this.#selected}", {`,
-      `  ...${JSON.stringify(options)},`,
+    const config = this.#currentConfig();
+    const context = [
       "  source: canvas.tokens.controlled[0],",
-      "  locations: game.user.targets.size ? [...game.user.targets] : canvas.tokens.controlled",
-      "});"
+      "  locations: game.user.targets.size ? [...game.user.targets] : canvas.tokens.controlled"
     ].join("\n");
+    const code = Array.isArray(config)
+      ? [
+          `game.modules.get("boss-forge").api.fx.playSteps(${JSON.stringify(config, null, 2)}, {`,
+          context,
+          "});"
+        ].join("\n")
+      : [
+          `game.modules.get("boss-forge").api.fx.play("${config.preset}", {`,
+          `  ...${JSON.stringify(config.options)},`,
+          context,
+          "});"
+        ].join("\n");
     await game.clipboard.copyPlainText(code);
     ui.notifications.info(game.i18n.localize("BOSSFORGE.FxCatalog.Copied"));
   }

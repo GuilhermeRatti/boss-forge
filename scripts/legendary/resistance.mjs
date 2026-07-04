@@ -1,7 +1,7 @@
 import { MODULE_ID, SETTINGS, FLAGS } from "../constants.mjs";
 import { log } from "../logger.mjs";
 import { escapeHtml, actorSides } from "../utils.mjs";
-import { playPreset, presetExists, listPresets } from "../fx/presets.mjs";
+import { playFx, assertValidFxConfig } from "../fx/presets.mjs";
 
 /**
  * Legendary resistance companion (M2, final scope): dnd5e's native card
@@ -57,10 +57,10 @@ async function createBurnMessage(actor) {
 
 async function playActorLegresFx(actor, tokenDoc) {
   const fx = actor.getFlag(MODULE_ID, FLAGS.LEGRES_FX);
-  if (!fx?.preset) return;
+  if (!fx) return;
   const token = tokenDoc?.object ?? tokenDoc;
   if (!token) return;
-  await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token], source: token });
+  await playFx(fx.steps ?? fx, { locations: [token], source: token });
 }
 
 /* -------------------------------------------- */
@@ -76,11 +76,12 @@ async function playActorLegresFx(actor, tokenDoc) {
  */
 export async function setActorLegresFx(actor, preset, options = {}) {
   if (!(actor instanceof Actor)) throw new Error("setActorLegresFx: first argument must be an Actor.");
-  if (!presetExists(preset)) {
-    throw new Error(`setActorLegresFx: unknown preset "${preset}". Available: ${listPresets().join(", ")}`);
-  }
+  const config = Array.isArray(preset) ? { steps: preset } : { preset, options };
+  assertValidFxConfig(Array.isArray(preset) ? preset : config);
   for (const side of actorSides(actor)) {
-    await side.setFlag(MODULE_ID, FLAGS.LEGRES_FX, { preset, options });
+    // setFlag merges objects; unset first so shape switches leave no residue.
+    await side.unsetFlag(MODULE_ID, FLAGS.LEGRES_FX);
+    await side.setFlag(MODULE_ID, FLAGS.LEGRES_FX, config);
   }
   return actor;
 }

@@ -1,7 +1,7 @@
 import { MODULE_ID, SETTINGS, FLAGS } from "./constants.mjs";
 import { log } from "./logger.mjs";
 import { escapeHtml, actorSides, whisperGM } from "./utils.mjs";
-import { playPreset, presetExists, listPresets } from "./fx/presets.mjs";
+import { playFx, assertValidFxConfig } from "./fx/presets.mjs";
 import { playItemFx } from "./legendary/item-fx.mjs";
 import { getActivitiesByActivationType } from "./legendary/activities.mjs";
 
@@ -246,10 +246,10 @@ async function promptLairActions(combatant, lairInit, round) {
 
 async function playActorLairFx(actor, tokenDoc) {
   const fx = actor.getFlag(MODULE_ID, FLAGS.LAIR_FX);
-  if (!fx?.preset) return;
+  if (!fx) return;
   const token = tokenDoc?.object ?? tokenDoc;
   if (!token) return;
-  await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token], source: token });
+  await playFx(fx.steps ?? fx, { locations: [token], source: token });
 }
 
 /* -------------------------------------------- */
@@ -324,11 +324,12 @@ export async function setLairPromptEnabled(actor, enabled = true) {
  */
 export async function setActorLairFx(actor, preset, options = {}) {
   if (!(actor instanceof Actor)) throw new Error("setActorLairFx: first argument must be an Actor.");
-  if (!presetExists(preset)) {
-    throw new Error(`setActorLairFx: unknown preset "${preset}". Available: ${listPresets().join(", ")}`);
-  }
+  const config = Array.isArray(preset) ? { steps: preset } : { preset, options };
+  assertValidFxConfig(Array.isArray(preset) ? preset : config);
   for (const side of actorSides(actor)) {
-    await side.setFlag(MODULE_ID, FLAGS.LAIR_FX, { preset, options });
+    // setFlag merges objects; unset first so shape switches leave no residue.
+    await side.unsetFlag(MODULE_ID, FLAGS.LAIR_FX);
+    await side.setFlag(MODULE_ID, FLAGS.LAIR_FX, config);
   }
   return actor;
 }

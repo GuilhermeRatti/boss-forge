@@ -91,9 +91,16 @@
       "AppliedLegres": "FX forjado na resistência lendária de {name}.",
       "AppliedLair": "FX forjado na ativação de covil de {name}.",
       "Copy": "Copiar código",
-      "CopyHint": "Copia um snippet de macro api.fx.play(...) com os parâmetros atuais.",
+      "CopyHint": "Copia um snippet de macro api.fx com os parâmetros atuais (ou a composição inteira).",
       "Copied": "Snippet de macro copiado para a área de transferência.",
-      "OpenDatabase": "Navegar no database do Sequencer"
+      "OpenDatabase": "Navegar no database do Sequencer",
+      "StepsSection": "Composição",
+      "StepsHint": "Encadeie presets numa única ação épica: configure um preset acima e adicione como etapa. Etapas tocam em ordem; cada delay é em ms após o início da etapa anterior. Com etapas presentes, Preview/Aplicar usam a composição inteira.",
+      "AddStep": "Adicionar preset atual como etapa",
+      "RemoveStep": "Remover etapa",
+      "StepDelay": "delay (ms)",
+      "StepAnchor": "âncora",
+      "AtInherit": "Herdar"
     },
     "FxPresets": {
       "impact": { "Name": "Impacto", "Tag": "golpe único", "Description": "Um efeito em cada alvo — o golpe básico de todo dia." },
@@ -106,6 +113,14 @@
       "file": { "Label": "Arquivo do efeito", "Hint": "Path do database do Sequencer (jb2a…, blfx…) ou caminho direto de arquivo." },
       "scale": { "Label": "Escala", "Hint": "" },
       "delay": { "Label": "Atraso (ms)", "Hint": "" },
+      "form": {
+        "Label": "Forma",
+        "Hint": "Cones e linhas ancoram no boss e apontam para cada alvo — o arquivo do impacto estica ao longo deles (sopros!).",
+        "Options": { "circle": "Círculo", "cone": "Cone", "line": "Linha" }
+      },
+      "length": { "Label": "Alcance (quadrados)", "Hint": "Comprimento do cone/linha." },
+      "angle": { "Label": "Ângulo do cone (°)", "Hint": "" },
+      "width": { "Label": "Largura da linha (quadrados)", "Hint": "" },
       "radius": { "Label": "Raio (quadrados)", "Hint": "" },
       "color": { "Label": "Cor do aviso", "Hint": "" },
       "duration": { "Label": "Duração do aviso (ms)", "Hint": "" },
