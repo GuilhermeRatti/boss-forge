@@ -42,6 +42,9 @@ Apenas **`blfx`**. Consequência para o FX Preset Engine: nenhum path `jb2a.*` p
 ## Discrepâncias vs. stack presumido no CLAUDE.md
 
 - **JB2A Patreon: não instalado** (nenhum prefixo `jb2a` no database; nenhuma pasta `jb2a*` em `Data\modules` na listagem de 2026-07-04). **Decisão (2026-07-04): o usuário vai instalar o JB2A Patreon.** Após instalar e ativar no mundo, re-executar a macro de diagnóstico e atualizar este arquivo com os prefixos novos.
+  - Tentativas via instalador do app **falham na extração**, não no download: `%LOCALAPPDATA%\FoundryVTT\Logs\{error,debug}.2026-07-04.log` mostram download 100% e depois `ENOTEMPTY: directory not empty, rmdir ...\jb2a_patreon\Library\...` → `PACKAGE.InstallFailed` (corrida de filesystem no Windows — handle preso por AV/indexador e/ou sobras de tentativa anterior).
+  - Alvo: **JB2A 0.9.1** (`id: jb2a_patreon`; manifest declara compat **mínimo 10 / verified 14** — v13 ok). Zip do manifest: 9,28 GB, acessível sem autenticação.
+  - Contorno: **instalação manual** — baixar o zip da URL `download` do manifest e extrair em `Data\modules\jb2a_patreon` (não passa pelo `rmdir` que falha).
 - **Combat Carousel: não instalado.** Cosmético, sem impacto nas integrações — o orquestrador usa `combatTurnChange` + guarda de GM ativo e não depende de quem avança o turno.
 - Automated Animations está presente no disco mas **inativo** no mundo dnd5e — consistente com a decisão de mantê-lo fora do stack 5e (é do projeto Tormenta 20).
 
