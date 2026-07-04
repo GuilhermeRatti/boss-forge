@@ -14,7 +14,8 @@ const SETTINGS_SCHEMA = {
   // Legendary resistance (M2)
   [SETTINGS.LEGRES_PROMPT]: { scope: "world", type: Boolean, default: true },
   [SETTINGS.LEGRES_AUTO_BURN]: { scope: "world", type: Boolean, default: false },
-  [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] }
+  [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] },
+  [SETTINGS.LEGRES_TIMEOUT]: { scope: "world", type: Number, default: 60, range: { min: 10, max: 300, step: 5 } }
 };
 
 function capitalize(key) {
@@ -35,6 +36,7 @@ export function registerSettings() {
     if (def.choices) {
       config.choices = Object.fromEntries(def.choices.map(c => [c, `${i18nBase}.${capitalize(c)}`]));
     }
+    if (def.range) config.range = def.range;
     game.settings.register(MODULE_ID, key, config);
   }
 }

@@ -22,6 +22,10 @@
         "Hint": "Quem vê a mensagem no chat quando uma resistência lendária é queimada.",
         "Public": "Todos (pública)",
         "Gm": "Só o Mestre (sussurro)"
+      },
+      "LegresTimeout": {
+        "Name": "Timeout do dialog de resistência lendária",
+        "Hint": "Segundos até o dialog do Mestre recusar a queima automaticamente (só para saves em workflow)."
       }
     },
     "Diagnostics": {

@@ -22,6 +22,10 @@
         "Hint": "Who sees the chat message when a legendary resistance is burned.",
         "Public": "Everyone (public)",
         "Gm": "GM only (whisper)"
+      },
+      "LegresTimeout": {
+        "Name": "Legendary resistance dialog timeout",
+        "Hint": "Seconds before the GM dialog auto-declines the burn (workflow saves only)."
       }
     },
     "Diagnostics": {

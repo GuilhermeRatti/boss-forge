@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Burn announcements in chat — public by default, switchable to GM-only whisper (**Legendary resistance chat message** setting) — plus an **Auto-burn** world setting (off by default) that skips the dialog while uses remain.
 - Optional FX on burn via an actor flag (`api.legendary.setActorLegresFx/clearActorLegresFx`), and `api.legendary.setResistPromptEnabled` for the per-boss opt-out (same both-sides handling as M1 for unlinked tokens).
 - Declarative settings registry (data table → registration loop, i18n keys derived from setting keys) to keep the growing settings list organized.
+- Native-path coverage for saves rolled outside a Midi workflow: burns made through dnd5e's own card button (or auto-burn on failed save cards with an explicit DC) are announced with the same visibility setting, independent of whether the save roll itself was private.
+- Configurable GM dialog timeout (**Legendary resistance dialog timeout**, 10–300 s, default 60).
 
 - **Legendary action cycle (M1).** At the end of each combat turn, the active GM is prompted with the legendary actions of every other eligible boss (NPC with a `legact` pool and at least one activity with the "Legendary" activation type). Using an action goes through the native `activity.use()`, so consumption, chat cards and the Midi-QOL workflow all behave as if triggered from the sheet; dnd5e's native reset (encounter start and the boss's own turn end) is left untouched.
 - Multiple uses per trigger are allowed (the GM adjudicates): the dialog reopens while uses remain, marking actions already used this trigger with a "used ×N" badge and disabling unaffordable ones.
