@@ -4,11 +4,19 @@ import { log } from "./logger.mjs";
 import { runDiagnostics, buildDiagnosticsReport } from "./diagnostics.mjs";
 import { registerLegendaryOrchestrator, setPromptEnabled } from "./legendary/orchestrator.mjs";
 import { setItemFx, clearItemFx, getItemFx } from "./legendary/item-fx.mjs";
+import {
+  registerLegendaryResistance,
+  setResistPromptEnabled,
+  setActorLegresFx,
+  clearActorLegresFx
+} from "./legendary/resistance.mjs";
 import { playPreset, listPresets, presetExists } from "./fx/presets.mjs";
+import "./socket.mjs";
 
 Hooks.once("init", () => {
   registerSettings();
   registerLegendaryOrchestrator();
+  registerLegendaryResistance();
   log.info("Initialized.");
 });
 
@@ -26,7 +34,10 @@ Hooks.once("ready", () => {
       setItemFx,
       clearItemFx,
       getItemFx,
-      setPromptEnabled
+      setPromptEnabled,
+      setResistPromptEnabled,
+      setActorLegresFx,
+      clearActorLegresFx
     })
   });
   log.info(`Ready (version ${module.version}).`);

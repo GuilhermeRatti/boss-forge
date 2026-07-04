@@ -1,6 +1,6 @@
-# Design M2 — Resistência Lendária (rascunho para revisão)
+# Design M2 — Resistência Lendária
 
-> **Status: aguardando revisão do usuário.** Escrito em 2026-07-04 com base em `docs/research/2026-07-03-m2-midi-qol-v13.md` e `docs/research/2026-07-04-m2-midi-qol-13.0.63-instalado.md` (fatos confirmados no bundle instalado). A implementação só começa após a revisão deste documento.
+> **Status: APROVADO pelo usuário em 2026-07-04** ("a parte técnica me parece irretocável"); decisões da revisão registradas na §9. Escrito em 2026-07-04 com base em `docs/research/2026-07-03-m2-midi-qol-v13.md` e `docs/research/2026-07-04-m2-midi-qol-13.0.63-instalado.md` (fatos confirmados no bundle instalado).
 
 ## 1. Escopo
 
@@ -21,7 +21,7 @@ Critério de aceite do briefing: quando um boss com resistência lendária **fal
 - **Boss elegível** = NPC alvo do workflow com `system.resources.legres.max > 0` e `legres.value > 0`, presente em `workflow.failedSaves`.
 - **Opt-out por ator**: `flags.boss-forge.legendary.resistPromptDisabled = true` (simétrico ao M1; togglável no dialog e via API). Vale no ator do combate (sintético em token não-vinculado) — helpers cobrem os dois lados, lição do M1.
 - **FX opcional na queima**: `flags.boss-forge.legresFx = { preset, options }` no **ator** (não em item — a queima não tem item), tocado no token do boss após confirmar. Sem flag → sem FX.
-- **Setting de módulo**: `boss-forge.legresPrompt` (world, boolean, default true).
+- **Settings de módulo** (world): `legresPrompt` (boolean, default true — liga/desliga o recurso), `legresAutoBurn` (boolean, default false — queima sem dialog enquanto houver usos; decisão da revisão), `legresChatVisibility` (choices `public`/`gm`, default `public` — visibilidade da mensagem de queima; decisão da revisão). Registro de settings passa a ser **declarativo** (tabela → loop, i18n derivada da chave) para organizar o crescimento previsto de configurações sem retrabalho.
 - **Timeout do dialog**: constante (60 s) com default "não queimar" — segurar o workflow trava o cast do jogador; o GM ausente não pode congelar a mesa.
 
 ## 4. Fluxo runtime
@@ -72,9 +72,9 @@ midi-qol.preSavesComplete (cliente do workflow, aguardado)
 
 Boss com `legres 3` + PC com magia de save (ex.: *Fireball* ou *Toll the Dead*). Player-cliente castando (2 clientes: GM + player, ou 2 abas) e GM-cliente castando. Verificar: dialog só no GM; queimar → save vira sucesso (sem dano/meio dano conforme a magia), `legres` decrementa na ficha, mensagem no chat, FX (se flag); não queimar → dano normal; opt-out; timeout; setting global; console limpo.
 
-## 9. Questões abertas (para o usuário decidir na revisão)
+## 9. Questões abertas — decididas pelo usuário na revisão (2026-07-04)
 
-1. **Mensagem de queima no chat: pública ou só GM?** Proposta: **pública** — "o dragão ignora o efeito" é informação clássica de mesa (a regra 2024 nem esconde o custo), e dá peso dramático. Alternativa: whisper para o GM.
-2. **Timeout de 60 s com default "não queimar"** está bom? (Segurar o cast do jogador indefinidamente não parece aceitável; alternativa: sem timeout, confiando no GM presente.)
-3. **Auto-burn** (queimar sozinho enquanto `legres > 0`, sem dialog — house rule comum): fica FORA do MVP como proposto, ou você quer já um toggle por boss? Proposta: fora (decisão do GM é soberana, consistente com o M1); fácil de adicionar depois.
-4. **FX de queima por flag no ator** (mesmo preset `impact` serve — um shimmer/escudo quando sair catálogo no M5): ok como opcional silencioso?
+1. **Mensagem de queima: pública por padrão, com setting para restringir ao GM** (`legresChatVisibility`). Recado incorporado: as configurações vão se multiplicar — registro declarativo desde já para minimizar retrabalho.
+2. **Timeout de 60 s com default "não queimar"**: confirmado.
+3. **Auto-burn: fora por padrão, disponível como toggle na config** (`legresAutoBurn`, world, default false).
+4. **FX de queima via flag no ator**: confirmado como opcional silencioso ("fácil de abandonar depois").
