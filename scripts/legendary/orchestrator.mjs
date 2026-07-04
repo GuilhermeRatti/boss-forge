@@ -1,5 +1,6 @@
 import { MODULE_ID, SETTINGS, FLAGS } from "../constants.mjs";
 import { log } from "../logger.mjs";
+import { actorSides } from "../utils.mjs";
 import { isEligibleBoss, getLegendaryResource } from "./activities.mjs";
 import { promptLegendaryActions } from "./prompt.mjs";
 
@@ -36,18 +37,9 @@ export async function setPromptEnabled(actor, enabled = true) {
       "setPromptEnabled: first argument must be an Actor. Tip: select the boss token and pass canvas.tokens.controlled[0].actor."
     );
   }
-  const targets = new Set([actor]);
-  if (actor.isToken) {
-    const base = actor.token?.baseActor;
-    if (base) targets.add(base);
-  } else {
-    for (const tokenDoc of actor.getActiveTokens(false, true)) {
-      if (tokenDoc.actor) targets.add(tokenDoc.actor);
-    }
-  }
-  for (const target of targets) {
-    if (enabled) await target.unsetFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED);
-    else await target.setFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED, true);
+  for (const side of actorSides(actor)) {
+    if (enabled) await side.unsetFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED);
+    else await side.setFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED, true);
   }
   return actor;
 }

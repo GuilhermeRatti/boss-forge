@@ -1,11 +1,8 @@
 import { MODULE_ID, FLAGS } from "../constants.mjs";
 import { log } from "../logger.mjs";
+import { escapeHtml } from "../utils.mjs";
 import { playPreset } from "../fx/presets.mjs";
 import { getLegendaryActivities, getLegendaryResource } from "./activities.mjs";
-
-function escapeHtml(text) {
-  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
 
 /**
  * Run the legendary action prompt cycle for one boss: show the dialog,

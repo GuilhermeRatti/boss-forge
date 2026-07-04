@@ -1,9 +1,6 @@
 import { MODULE_ID, MODULE_TITLE } from "./constants.mjs";
 import { log } from "./logger.mjs";
-
-function escapeHtml(text) {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
+import { escapeHtml } from "./utils.mjs";
 
 /**
  * Build a plain-text environment report: Foundry core, game system,
