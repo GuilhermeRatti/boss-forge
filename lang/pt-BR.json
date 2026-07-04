@@ -26,6 +26,10 @@
       "LairPrompt": {
         "Name": "Orquestração de covil",
         "Hint": "Pergunta sobre modo covil no início do combate (regras 2024, +1 ação/resistência lendária nativo enquanto dentro) e oferece as ações de covil quando a iniciativa passa pela contagem do boss (regras 2014)."
+      },
+      "Phases": {
+        "Name": "Fases por HP",
+        "Hint": "Bosses configurados com thresholds de HP (api.phases.set) anunciam a virada de fase, tocam seus FX e alternam efeitos quando os pontos de vida cruzam um threshold."
       }
     },
     "Diagnostics": {
@@ -45,6 +49,10 @@
     },
     "LegRes": {
       "BurnMessage": "{name} queima uma Resistência Lendária e transforma a falha em sucesso."
+    },
+    "Phases": {
+      "Announcement": "{boss} entra em uma nova fase: {name}!",
+      "DefaultName": "Fase {index}"
     },
     "Lair": {
       "InsideDialogTitle": "{name} — Covil",

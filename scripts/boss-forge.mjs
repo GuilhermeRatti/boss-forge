@@ -19,12 +19,24 @@ import {
   setActorLairFx,
   clearActorLairFx
 } from "./lair.mjs";
+import {
+  registerPhaseOrchestrator,
+  setPhases,
+  getPhases,
+  clearPhases,
+  resetPhases,
+  advancePhase,
+  getPhaseIndex,
+  setItemPhase,
+  clearItemPhase
+} from "./phases.mjs";
 
 Hooks.once("init", () => {
   registerSettings();
   registerLegendaryOrchestrator();
   registerLegendaryResistance();
   registerLairOrchestrator();
+  registerPhaseOrchestrator();
   log.info("Initialized.");
 });
 
@@ -53,6 +65,16 @@ Hooks.once("ready", () => {
       setPromptEnabled: setLairPromptEnabled,
       setActorLairFx,
       clearActorLairFx
+    }),
+    phases: Object.freeze({
+      set: setPhases,
+      get: getPhases,
+      clear: clearPhases,
+      reset: resetPhases,
+      advance: advancePhase,
+      getIndex: getPhaseIndex,
+      setItemPhase,
+      clearItemPhase
     })
   });
   log.info(`Ready (version ${module.version}).`);

@@ -26,6 +26,10 @@
       "LairPrompt": {
         "Name": "Lair orchestration",
         "Hint": "Ask about lair mode at combat start (2024 rules, native +1 legendary action/resistance while inside) and prompt lair actions when initiative passes the boss's lair count (2014 rules)."
+      },
+      "Phases": {
+        "Name": "HP phases",
+        "Hint": "Bosses configured with HP thresholds (api.phases.set) announce phase transitions, play their FX and toggle effects when their hit points cross a threshold."
       }
     },
     "Diagnostics": {
@@ -45,6 +49,10 @@
     },
     "LegRes": {
       "BurnMessage": "{name} burns a Legendary Resistance and turns the failure into a success."
+    },
+    "Phases": {
+      "Announcement": "{boss} enters a new phase: {name}!",
+      "DefaultName": "Phase {index}"
     },
     "Lair": {
       "InsideDialogTitle": "{name} — Lair",

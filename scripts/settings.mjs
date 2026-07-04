@@ -18,7 +18,9 @@ const SETTINGS_SCHEMA = {
   [SETTINGS.LEGRES_ANNOUNCE]: { scope: "world", type: Boolean, default: true },
   [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] },
   // Lair (M3)
-  [SETTINGS.LAIR_PROMPT]: { scope: "world", type: Boolean, default: true }
+  [SETTINGS.LAIR_PROMPT]: { scope: "world", type: Boolean, default: true },
+  // HP phases (M4)
+  [SETTINGS.PHASES]: { scope: "world", type: Boolean, default: true }
 };
 
 function capitalize(key) {
