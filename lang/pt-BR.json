@@ -5,6 +5,10 @@
         "Name": "Log de depuração",
         "Hint": "Imprime mensagens de depuração detalhadas do Boss Forge no console do navegador (F12)."
       },
+      "PromptMultiUse": {
+        "Name": "Múltiplos usos por prompt",
+        "Hint": "Reabre o dialog de ações lendárias/de covil após cada uso, permitindo várias ações no mesmo gatilho (house rule). Desligado: o dialog fecha após um uso, conforme a regra escrita."
+      },
       "LegendaryPrompt": {
         "Name": "Prompt de ações lendárias",
         "Hint": "Ao fim do turno de cada outra criatura, pergunta ao Mestre pelas ações lendárias disponíveis do boss."

@@ -3,6 +3,7 @@ export const MODULE_TITLE = "Boss Forge";
 
 export const SETTINGS = {
   DEBUG: "debug",
+  PROMPT_MULTI_USE: "promptMultiUse",
   LEGENDARY_PROMPT: "legendaryPrompt",
   LEGRES_ANNOUNCE: "legresAnnounce",
   LEGRES_CHAT_VISIBILITY: "legresChatVisibility",

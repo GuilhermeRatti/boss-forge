@@ -47,7 +47,7 @@ combatTurnChange (todos os clientes)
 - **Múltiplos bosses**: dialogs sequenciais (um por boss). Cenário raro; agregação em um painel único fica para depois, se incomodar.
 - **Fechar o dialog = pular.** Sem re-prompt no mesmo turno.
 - Ações com custo > usos restantes aparecem desabilitadas (título mostra `restantes/max`).
-- Após `activity.use()`, o dialog reabre atualizado se ainda houver usos (> 0) — permite gastar 2×1 no mesmo gatilho (regra permite 1 ação por gatilho por RAW estrita; **decisão confirmada na revisão**: permitir múltiplas, o GM é o juiz — "o sistema serve a campanha, não o contrário"). **Adendo da revisão (2026-07-04)**: o dialog reaberto marca visualmente as ações já usadas no gatilho atual (badge "usada ×N"), para facilitar GMs que queiram seguir a RAW.
+- Após `activity.use()`, o dialog reabre atualizado se ainda houver usos (> 0) — permite gastar 2×1 no mesmo gatilho (regra permite 1 ação por gatilho por RAW estrita; **decisão confirmada na revisão**: permitir múltiplas, o GM é o juiz — "o sistema serve a campanha, não o contrário"). **Adendo da revisão (2026-07-04)**: o dialog reaberto marca visualmente as ações já usadas no gatilho atual (badge "usada ×N"), para facilitar GMs que queiram seguir a RAW. **Ajuste pós-teste do M3 (2026-07-04)**: na prática a reabertura em loop era inconveniente — o padrão passou a FECHAR o dialog após um uso (RAW) e o setting mundial `promptMultiUse` reativa o loop com badges (house rule).
 - FX dispara **depois** do `use()` resolver (não bloqueia a mecânica se o asset faltar; `entryExists` valida antes de tocar).
 
 ## 5. UX do dialog (GM)

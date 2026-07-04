@@ -58,4 +58,4 @@ Numerado na entrega (mensagem do agente).
 
 ## 7. Pós-teste
 
-Feedback do usuário decide podas/ajustes, registrados aqui como nas M1/M2.
+**M3 APROVADO pelo usuário em 2026-07-04** ("tudo funcionou perfeitamente... fora isso ficou tudo show, está aprovado"), com um ajuste aplicado no mesmo dia: o dialog de ações de covil reabria após cada uso (7 usos no round 1 do teste) e isso é inconveniente — **o padrão passou a fechar após um uso (RAW)**, com o setting mundial `promptMultiUse` reativando o loop de reabertura com badges (house rule), valendo também para o prompt de ações lendárias do M1.

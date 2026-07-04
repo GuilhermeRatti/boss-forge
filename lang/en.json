@@ -5,6 +5,10 @@
         "Name": "Debug logging",
         "Hint": "Print verbose Boss Forge debug messages to the browser console (F12)."
       },
+      "PromptMultiUse": {
+        "Name": "Multiple uses per prompt",
+        "Hint": "Reopen the legendary/lair action dialog after each use, allowing several actions on the same trigger (house rule). Off: the dialog closes after one use, as per RAW."
+      },
       "LegendaryPrompt": {
         "Name": "Legendary action prompt",
         "Hint": "At the end of each other creature's turn, prompt the GM with the boss's available legendary actions."

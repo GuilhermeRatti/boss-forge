@@ -9,6 +9,9 @@ import { MODULE_ID, SETTINGS } from "./constants.mjs";
 const SETTINGS_SCHEMA = {
   // Module-wide
   [SETTINGS.DEBUG]: { scope: "client", type: Boolean, default: false },
+  // Shared prompt behavior: off = RAW (dialog closes after one use);
+  // on = house rule (reopen with used-badges while uses remain).
+  [SETTINGS.PROMPT_MULTI_USE]: { scope: "world", type: Boolean, default: false },
   // Legendary actions (M1)
   [SETTINGS.LEGENDARY_PROMPT]: { scope: "world", type: Boolean, default: true },
   // Legendary resistance (M2)

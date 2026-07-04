@@ -1,4 +1,4 @@
-import { MODULE_ID, FLAGS } from "../constants.mjs";
+import { MODULE_ID, SETTINGS, FLAGS } from "../constants.mjs";
 import { escapeHtml } from "../utils.mjs";
 import { playItemFx } from "./item-fx.mjs";
 import { getLegendaryActivities, getLegendaryResource } from "./activities.mjs";
@@ -37,6 +37,9 @@ export async function promptLegendaryActions(combatant, { triggerName } = {}) {
     if (!results) continue;
     used.set(choice.activity.uuid, (used.get(choice.activity.uuid) ?? 0) + 1);
     await playItemFx(choice.item, combatant);
+    // RAW default: one legendary action per trigger. The promptMultiUse
+    // setting re-enables the reopen-with-badge loop (house rule).
+    if (!game.settings.get(MODULE_ID, SETTINGS.PROMPT_MULTI_USE)) return;
   }
 }
 

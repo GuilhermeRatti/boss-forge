@@ -242,6 +242,9 @@ async function promptLairActions(combatant, lairInit, round) {
     if (!results) continue;
     used.set(choice.activity.uuid, (used.get(choice.activity.uuid) ?? 0) + 1);
     await playItemFx(choice.item, combatant);
+    // RAW default: one lair action per round. The promptMultiUse setting
+    // re-enables the reopen-with-badge loop (house rule).
+    if (!game.settings.get(MODULE_ID, SETTINGS.PROMPT_MULTI_USE)) return;
   }
 }
 
