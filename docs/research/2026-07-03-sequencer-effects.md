@@ -1,6 +1,8 @@
 # Pesquisa — Sequencer: API de effects para presets (verificado em 2026-07-03)
 
-> Fontes: release 4.2.2 (`module.json` oficial; compat mínimo 13, verified/max 14) e `docs/api/effect.md` do repo `fantasycalendar/FoundryVTT-Sequencer` (branch master). Database API já verificada em `2026-07-03-m0-fundacao.md`. Versão instalada do usuário: pendente (diagnóstico).
+> Fontes: release 4.2.2 (`module.json` oficial; compat mínimo 13, verified/max 14) e `docs/api/effect.md` do repo `fantasycalendar/FoundryVTT-Sequencer` (branch master). Database API já verificada em `2026-07-03-m0-fundacao.md`.
+>
+> **Atualização 2026-07-04: diagnóstico confirmou Sequencer 4.2.2 instalado** — igual à release desta pesquisa (ver `docs/environment.md`).
 
 ## Métodos do EffectSection relevantes para o FX Preset Engine
 
@@ -18,5 +20,5 @@ Uso geral: `new Sequence(...).effect().file("jb2a...").atLocation(token) ... .pl
 
 - `.origin("boss-forge.<presetId>.<runId>")` + Effect Manager permitem cancelar/limpar FX de preset de forma determinística.
 - `.persist()` cobre enrage/auras de fase (M4); telegraphs são compostos com `.duration()` + `.waitUntilFinished()` + passo de impacto.
-- `.playIf()` permite presets tolerantes a asset ausente; combinar com `Sequencer.Database.entryExists(path)` para validar paths `jb2a.*`/`blfx.*` antes de tocar (prefixos exatos da mesa saem no diagnóstico).
+- `.playIf()` permite presets tolerantes a asset ausente; combinar com `Sequencer.Database.entryExists(path)` para validar paths antes de tocar. *(Diagnóstico 2026-07-04: só o prefixo `blfx` está registrado — JB2A não está instalado; nenhum default `jb2a.*` pode ser assumido. Ver `docs/environment.md`.)*
 - Nada aqui importa código dnd5e — o núcleo FX recebe tokens/pontos/paths como parâmetros puros.

@@ -1,6 +1,6 @@
 # Design M1 — Ciclo de ação lendária (rascunho para revisão)
 
-> **Status: aguardando revisão do usuário.** Escrito em 2026-07-03 com base na pesquisa em `docs/research/2026-07-03-*`. A implementação só começa após o aceite do M0 e a revisão deste documento. Referência dnd5e: 5.3.3 (provisória até o diagnóstico).
+> **Status: aguardando revisão do usuário.** Escrito em 2026-07-03 com base na pesquisa em `docs/research/2026-07-03-*`. A implementação só começa após o aceite do M0 e a revisão deste documento. Referência dnd5e: 5.3.3 (**confirmada pelo diagnóstico de 2026-07-04** — ver `docs/environment.md`).
 
 ## 1. Escopo
 
