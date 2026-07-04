@@ -1,6 +1,6 @@
-# Design M1 — Ciclo de ação lendária (rascunho para revisão)
+# Design M1 — Ciclo de ação lendária
 
-> **Status: aguardando revisão do usuário.** Escrito em 2026-07-03 com base na pesquisa em `docs/research/2026-07-03-*`. A implementação só começa após o aceite do M0 e a revisão deste documento. Referência dnd5e: 5.3.3 (**confirmada pelo diagnóstico de 2026-07-04** — ver `docs/environment.md`).
+> **Status: APROVADO pelo usuário em 2026-07-04** como primeira entrega ("caso decisões novas surjam ou mudem, eu vou avisando no desenvolvimento"). Decisões da revisão registradas na §9. Escrito em 2026-07-03 com base na pesquisa em `docs/research/2026-07-03-*`. Referência dnd5e: 5.3.3 (**confirmada pelo diagnóstico de 2026-07-04** — ver `docs/environment.md`).
 
 ## 1. Escopo
 
@@ -46,12 +46,12 @@ combatTurnChange (todos os clientes)
 - **Múltiplos bosses**: dialogs sequenciais (um por boss). Cenário raro; agregação em um painel único fica para depois, se incomodar.
 - **Fechar o dialog = pular.** Sem re-prompt no mesmo turno.
 - Ações com custo > usos restantes aparecem desabilitadas (título mostra `restantes/max`).
-- Após `activity.use()`, o dialog reabre atualizado se ainda houver usos (> 0) — permite gastar 2×1 no mesmo gatilho (regra permite 1 ação por gatilho por RAW estrita; **decisão**: permitir múltiplas, o GM é o juiz — é ferramenta de mestre, não árbitro).
+- Após `activity.use()`, o dialog reabre atualizado se ainda houver usos (> 0) — permite gastar 2×1 no mesmo gatilho (regra permite 1 ação por gatilho por RAW estrita; **decisão confirmada na revisão**: permitir múltiplas, o GM é o juiz — "o sistema serve a campanha, não o contrário"). **Adendo da revisão (2026-07-04)**: o dialog reaberto marca visualmente as ações já usadas no gatilho atual (badge "usada ×N"), para facilitar GMs que queiram seguir a RAW.
 - FX dispara **depois** do `use()` resolver (não bloqueia a mecânica se o asset faltar; `entryExists` valida antes de tocar).
 
 ## 5. UX do dialog (GM)
 
-`foundry.applications.api.DialogV2`, título com nome do boss + contador (`Ações lendárias: 2/3`), uma linha por activity: ícone do item, nome, custo, botão "Usar". Rodapé: "Pular" e "Não perguntar mais". Strings todas em `BOSSFORGE.Legendary.*` (en + pt-BR).
+`foundry.applications.api.DialogV2`, título com nome do boss + contador (`Ações lendárias: 2/3`), uma linha por activity: ícone do item, nome, custo, botão "Usar". Ações já usadas no gatilho atual exibem um marcador "usada ×N" (estado efêmero do ciclo de prompt, não persistido). Rodapé: "Pular" e "Não perguntar mais". Strings todas em `BOSSFORGE.Legendary.*` (en + pt-BR).
 
 ## 6. FX mínimo do M1
 
@@ -69,8 +69,8 @@ Um único preset genérico `impact`: `new Sequence().effect().file(<dbPath da fl
 
 1 boss (com 3 ações lendárias de custos 1/1/2 e `legact.max = 3`) + 2 PCs em combate. Verificar: prompt ao fim de cada turno de PC; consumo correto na ficha (contador da ficha do NPC e barra de recursos); ações desabilitadas quando custo > restante; reset automático ao fim do turno do boss; FX tocando na ação com flag; opt-out funcionando; console limpo.
 
-## 9. Questões abertas (para o usuário decidir na revisão)
+## 9. Questões abertas — decididas pelo usuário na revisão (2026-07-04)
 
-1. **Elegibilidade automática** (todo NPC com legact + activity legendary no combate) com opt-out por flag está ok, ou prefere opt-in explícito (só atores marcados como boss)? Proposta atual: automático + opt-out.
-2. **Múltiplos usos por gatilho** (seção 4): manter permitido (GM como juiz) ou travar em 1 ação por prompt (RAW)?
-3. **FX no M1**: um preset `impact` simples basta para validar o pipeline, ou você quer já um telegraph (aviso → delay → impacto) nessa primeira entrega?
+1. **Elegibilidade automática com opt-out** — confirmada a proposta (todo NPC com legact + activity legendary no combate participa; flag de opt-out por ator).
+2. **Múltiplos usos por gatilho mantidos** — a decisão do GM é soberana ("o sistema serve a campanha, não o contrário"). Contrapartida pedida: **indicador visual de ações já usadas no turno/gatilho** no dialog, para GMs que queiram seguir a RAW (incorporado nas §4 e §5).
+3. **Apenas o preset `impact` simples** — o M1 é funcional, não apresentacional; telegraphs e polimento visual ficam para o M5.
