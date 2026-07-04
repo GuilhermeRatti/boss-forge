@@ -178,7 +178,10 @@ async function onSaveMessageUpdated(message, changes) {
   try {
     if (!game.user.isActiveGM) return;
     if (!game.settings.get(MODULE_ID, SETTINGS.LEGRES_PROMPT)) return;
-    if (changes?.flags?.dnd5e?.roll?.forceSuccess !== true) return;
+    const forced = changes?.flags?.dnd5e?.roll?.forceSuccess
+      ?? changes?.flags?.dnd5e?.["roll.forceSuccess"]
+      ?? changes?.["flags.dnd5e.roll.forceSuccess"];
+    if (forced !== true) return;
     const actor = getMessageActor(message);
     if (!actor) return;
     const legres = getLegres(actor); // resistSave already decremented it
