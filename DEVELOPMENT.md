@@ -30,7 +30,7 @@ Pré-requisitos: [Git for Windows](https://git-scm.com/download/win) e [Node.js 
 
 ```bat
 cd %LOCALAPPDATA%\FoundryVTT\Data\modules
-git clone https://github.com/GuilhermeRatti/Boss-Forge.git boss-forge
+git clone https://github.com/GuilhermeRatti/boss-forge.git boss-forge
 cd boss-forge
 npm install
 npm run packs:build
@@ -98,7 +98,7 @@ A Action então: compila os packs, carimba versão e URLs no `module.json` (deri
 Instalação/atualização no Foundry via **manifest URL estável** (aponta sempre para a release mais recente; o Foundry detecta atualizações sozinho):
 
 ```
-https://github.com/GuilhermeRatti/Boss-Forge/releases/latest/download/module.json
+https://github.com/GuilhermeRatti/boss-forge/releases/latest/download/module.json
 ```
 
 ### Rollback
@@ -106,7 +106,7 @@ https://github.com/GuilhermeRatti/Boss-Forge/releases/latest/download/module.jso
 Cada release guarda o próprio manifesto. Para voltar a uma versão específica, desinstale o módulo e reinstale com o manifest daquela release:
 
 ```
-https://github.com/GuilhermeRatti/Boss-Forge/releases/download/v0.0.1/module.json
+https://github.com/GuilhermeRatti/boss-forge/releases/download/v0.0.1/module.json
 ```
 
 > Nota: instalar por essa URL fixa ainda permite que o Foundry ofereça atualização para a latest depois (o campo `manifest` dentro do arquivo aponta para a latest). Para "congelar" numa versão, basta não aceitar a atualização.

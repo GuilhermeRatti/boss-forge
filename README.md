@@ -18,13 +18,13 @@ Boss Forge does **not** replace your automation stack (Midi-QOL/DAE) or animatio
 Install via manifest URL in Foundry's **Add-on Modules → Install Module**:
 
 ```
-https://github.com/GuilhermeRatti/Boss-Forge/releases/latest/download/module.json
+https://github.com/GuilhermeRatti/boss-forge/releases/latest/download/module.json
 ```
 
 To roll back to a specific version, use that release's own manifest URL:
 
 ```
-https://github.com/GuilhermeRatti/Boss-Forge/releases/download/vX.Y.Z/module.json
+https://github.com/GuilhermeRatti/boss-forge/releases/download/vX.Y.Z/module.json
 ```
 
 ## Pinned target environment
