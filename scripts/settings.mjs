@@ -12,7 +12,7 @@ const SETTINGS_SCHEMA = {
   // Legendary actions (M1)
   [SETTINGS.LEGENDARY_PROMPT]: { scope: "world", type: Boolean, default: true },
   // Legendary resistance (M2)
-  [SETTINGS.LEGRES_PROMPT]: { scope: "world", type: Boolean, default: true },
+  [SETTINGS.LEGRES_ANNOUNCE]: { scope: "world", type: Boolean, default: true },
   [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] }
 };
 

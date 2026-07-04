@@ -9,9 +9,9 @@
         "Name": "Legendary action prompt",
         "Hint": "At the end of each other creature's turn, prompt the GM with the boss's available legendary actions."
       },
-      "LegresPrompt": {
-        "Name": "Legendary resistance prompt",
-        "Hint": "When a boss with legendary resistances fails a saving throw inside a Midi-QOL workflow, ask the GM whether to burn one before damage applies."
+      "LegresAnnounce": {
+        "Name": "Announce legendary resistance",
+        "Hint": "When the GM uses dnd5e's \"Use Legendary Resistance\" button on a save card, post a chat message and play the boss's burn FX (if configured)."
       },
       "LegresChatVisibility": {
         "Name": "Legendary resistance chat message",
@@ -36,12 +36,7 @@
       "OptOutConfirmed": "Boss Forge will no longer prompt legendary actions for {name}. Undo (with the boss token selected): game.modules.get(\"boss-forge\").api.legendary.setPromptEnabled(canvas.tokens.controlled[0].actor)"
     },
     "LegRes": {
-      "DialogTitle": "{name} — Legendary Resistance ({remaining}/{max})",
-      "Prompt": "<strong>{name}</strong> failed a saving throw (DC {dc}) against <strong>{item}</strong> from {caster}. Burn a legendary resistance to succeed instead?",
-      "Burn": "Burn resistance",
-      "Pass": "Let it fail",
-      "BurnMessage": "{name} burns a Legendary Resistance and turns the failure into a success ({remaining}/{max} remaining).",
-      "OptOutConfirmed": "Boss Forge will no longer ask about legendary resistance for {name}. Undo (with the boss token selected): game.modules.get(\"boss-forge\").api.legendary.setResistPromptEnabled(canvas.tokens.controlled[0].actor)"
+      "BurnMessage": "{name} burns a Legendary Resistance and turns the failure into a success."
     }
   }
 }

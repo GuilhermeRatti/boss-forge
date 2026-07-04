@@ -9,9 +9,9 @@
         "Name": "Prompt de ações lendárias",
         "Hint": "Ao fim do turno de cada outra criatura, pergunta ao Mestre pelas ações lendárias disponíveis do boss."
       },
-      "LegresPrompt": {
-        "Name": "Prompt de resistência lendária",
-        "Hint": "Quando um boss com resistências lendárias falhar um teste de resistência num workflow do Midi-QOL, pergunta ao Mestre se quer queimar uma antes do dano ser aplicado."
+      "LegresAnnounce": {
+        "Name": "Anunciar resistência lendária",
+        "Hint": "Quando o Mestre usar o botão \"Use Legendary Resistance\" do dnd5e num card de save, publica uma mensagem no chat e toca o FX de queima do boss (se configurado)."
       },
       "LegresChatVisibility": {
         "Name": "Mensagem de queima no chat",
@@ -36,12 +36,7 @@
       "OptOutConfirmed": "O Boss Forge não vai mais perguntar pelas ações lendárias de {name}. Para desfazer (com o token do boss selecionado): game.modules.get(\"boss-forge\").api.legendary.setPromptEnabled(canvas.tokens.controlled[0].actor)"
     },
     "LegRes": {
-      "DialogTitle": "{name} — Resistência Lendária ({remaining}/{max})",
-      "Prompt": "<strong>{name}</strong> falhou num teste de resistência (CD {dc}) contra <strong>{item}</strong> de {caster}. Queimar uma resistência lendária para transformar em sucesso?",
-      "Burn": "Queimar resistência",
-      "Pass": "Deixar falhar",
-      "BurnMessage": "{name} queima uma Resistência Lendária e transforma a falha em sucesso ({remaining}/{max} restantes).",
-      "OptOutConfirmed": "O Boss Forge não vai mais perguntar sobre resistência lendária de {name}. Para desfazer (com o token do boss selecionado): game.modules.get(\"boss-forge\").api.legendary.setResistPromptEnabled(canvas.tokens.controlled[0].actor)"
+      "BurnMessage": "{name} queima uma Resistência Lendária e transforma a falha em sucesso."
     }
   }
 }

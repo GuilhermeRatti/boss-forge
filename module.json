@@ -30,7 +30,6 @@
       "path": "lang/pt-BR.json"
     }
   ],
-  "socket": true,
   "packs": [
     {
       "name": "boss-forge-macros",
@@ -50,18 +49,6 @@
         "id": "sequencer",
         "type": "module",
         "manifest": "https://github.com/fantasycalendar/FoundryVTT-Sequencer/releases/latest/download/module.json"
-      }
-    ],
-    "recommends": [
-      {
-        "id": "midi-qol",
-        "type": "module",
-        "reason": "Legendary resistance interception (M2) runs inside the Midi-QOL workflow."
-      },
-      {
-        "id": "socketlib",
-        "type": "module",
-        "reason": "Relays the legendary resistance GM prompt when a player's client runs the workflow."
       }
     ]
   },

@@ -6,12 +6,10 @@ import { registerLegendaryOrchestrator, setPromptEnabled } from "./legendary/orc
 import { setItemFx, clearItemFx, getItemFx } from "./legendary/item-fx.mjs";
 import {
   registerLegendaryResistance,
-  setResistPromptEnabled,
   setActorLegresFx,
   clearActorLegresFx
 } from "./legendary/resistance.mjs";
 import { playPreset, listPresets, presetExists } from "./fx/presets.mjs";
-import "./socket.mjs";
 
 Hooks.once("init", () => {
   registerSettings();
@@ -35,7 +33,6 @@ Hooks.once("ready", () => {
       clearItemFx,
       getItemFx,
       setPromptEnabled,
-      setResistPromptEnabled,
       setActorLegresFx,
       clearActorLegresFx
     })
