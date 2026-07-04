@@ -17,13 +17,11 @@ import { registerSocketHandler, executeAsGM, socketAvailable } from "../socket.m
  */
 
 const SOCKET_PROMPT = "legresPrompt";
-const DEFAULT_TIMEOUT_SECONDS = 60;
 
 export function registerLegendaryResistance() {
   Hooks.on("midi-qol.preSavesComplete", onPreSavesComplete);
-  // Native path (saves rolled outside a Midi workflow, e.g. from the sheet
-  // or a spell card): auto-burn on creation, announce on forceSuccess.
-  Hooks.on("createChatMessage", onSaveMessageCreated);
+  // Native path (saves rolled outside a Midi workflow): announce burns made
+  // through dnd5e's own card button.
   Hooks.on("updateChatMessage", onSaveMessageUpdated);
   registerSocketHandler(SOCKET_PROMPT, handleGmPrompt);
 }
@@ -112,9 +110,7 @@ async function handleGmPrompt(payload) {
   const legres = getLegres(actor);
   if (!legres || legres.value <= 0) return { burned: false };
 
-  let choice;
-  if (game.settings.get(MODULE_ID, SETTINGS.LEGRES_AUTO_BURN)) choice = "burn";
-  else choice = await showGmDialog({ actor, legres, payload });
+  const choice = await showGmDialog({ actor, legres, payload });
 
   if (choice === "optout") {
     await setResistPromptEnabled(actor, false);
@@ -134,40 +130,8 @@ async function handleGmPrompt(payload) {
 /* -------------------------------------------- */
 
 /**
- * Auto-burn for dnd5e save cards that do not belong to a Midi workflow
- * (those are handled in preSavesComplete — flags["midi-qol"] marks them).
- * Requires an explicit DC on every roll: without one, failure is unknowable
- * and the native card button stays the GM's tool. Runs on the active GM only.
- * @param {ChatMessage} message
- */
-async function onSaveMessageCreated(message) {
-  try {
-    if (!game.user.isActiveGM) return;
-    if (!game.settings.get(MODULE_ID, SETTINGS.LEGRES_PROMPT)) return;
-    if (!game.settings.get(MODULE_ID, SETTINGS.LEGRES_AUTO_BURN)) return;
-    const roll = message.getFlag("dnd5e", "roll");
-    if (roll?.type !== "save" || roll.forceSuccess) return;
-    if (message.flags?.["midi-qol"]) return;
-    const failedWithDC = message.rolls?.length > 0
-      && message.rolls.every(r => Number.isNumeric(r.options?.target) && r.isSuccess === false);
-    if (!failedWithDC) return;
-    const actor = getMessageActor(message);
-    if (!actor?.system?.isNPC) return;
-    const legres = getLegres(actor);
-    if (!legres || !(legres.max > 0) || legres.value <= 0) return;
-    if (actor.getFlag(MODULE_ID, FLAGS.LEGRES_PROMPT_DISABLED)) return;
-    // Native primitive: bumps legres.spent and sets flags.dnd5e.roll.forceSuccess
-    // (which triggers the announcement below via updateChatMessage).
-    await actor.system.resistSave(message);
-    log.debug(`Auto-burned legendary resistance for ${actor.name} (native save card).`);
-  } catch (err) {
-    log.error("Legendary resistance auto-burn (native card) failed.", err);
-  }
-}
-
-/**
- * Announce burns made through dnd5e's native resistSave (the card button or
- * our native-path auto-burn): forceSuccess flips to true on the message.
+ * Announce burns made through dnd5e's native resistSave (the card button):
+ * forceSuccess flips to true on the message.
  * Posts an independent chat message that follows the visibility setting
  * regardless of whether the save roll itself was private. The workflow path
  * announces directly and never sets forceSuccess, so nothing double-fires.
@@ -203,8 +167,6 @@ function getMessageActor(message) {
  * @returns {Promise<"burn"|"pass"|"optout"|null>} null = dismissed or timed out (= pass)
  */
 async function showGmDialog({ actor, legres, payload }) {
-  const seconds = game.settings.get(MODULE_ID, SETTINGS.LEGRES_TIMEOUT) || DEFAULT_TIMEOUT_SECONDS;
-  const timeoutMs = seconds * 1000;
   const content = `
     <p>${game.i18n.format("BOSSFORGE.LegRes.Prompt", {
       name: escapeHtml(actor.name),
@@ -212,12 +174,9 @@ async function showGmDialog({ actor, legres, payload }) {
       caster: escapeHtml(payload.casterName),
       dc: payload.saveDC ?? "?"
     })}</p>
-    <p class="boss-forge-timeout">${game.i18n.format("BOSSFORGE.LegRes.Timeout", { seconds })}</p>
   `;
 
-  let intervalId = null;
-  let timeoutId = null;
-  const result = await foundry.applications.api.DialogV2.wait({
+  return foundry.applications.api.DialogV2.wait({
     classes: ["boss-forge-legendary"],
     window: {
       title: game.i18n.format("BOSSFORGE.LegRes.DialogTitle", {
@@ -232,23 +191,10 @@ async function showGmDialog({ actor, legres, payload }) {
       { action: "burn", label: "BOSSFORGE.LegRes.Burn", icon: "fa-solid fa-shield-halved", default: true },
       { action: "pass", label: "BOSSFORGE.LegRes.Pass", icon: "fa-solid fa-xmark" },
       { action: "optout", label: "BOSSFORGE.Legendary.OptOut", icon: "fa-solid fa-bell-slash" }
-    ],
-    render: (event, dialog) => {
-      if (timeoutId !== null) return; // render fires once, but stay safe
-      let remaining = seconds;
-      const el = dialog.element.querySelector(".boss-forge-timeout");
-      intervalId = setInterval(() => {
-        remaining -= 1;
-        if (el && remaining >= 0) {
-          el.textContent = game.i18n.format("BOSSFORGE.LegRes.Timeout", { seconds: remaining });
-        }
-      }, 1000);
-      timeoutId = setTimeout(() => dialog.close(), timeoutMs);
-    }
+    ]
+    // No timeout by design: the burn is the GM's call, and dismissing the
+    // dialog (ESC/close) resolves null = "let it fail".
   });
-  clearInterval(intervalId);
-  clearTimeout(timeoutId);
-  return result;
 }
 
 async function createBurnMessage(actor, { remaining, max }) {

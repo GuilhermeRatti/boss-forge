@@ -13,19 +13,11 @@
         "Name": "Prompt de resistência lendária",
         "Hint": "Quando um boss com resistências lendárias falhar um teste de resistência num workflow do Midi-QOL, pergunta ao Mestre se quer queimar uma antes do dano ser aplicado."
       },
-      "LegresAutoBurn": {
-        "Name": "Queima automática de resistência lendária",
-        "Hint": "Queima uma resistência lendária automaticamente (sem dialog) enquanto houver usos."
-      },
       "LegresChatVisibility": {
         "Name": "Mensagem de queima no chat",
         "Hint": "Quem vê a mensagem no chat quando uma resistência lendária é queimada.",
         "Public": "Todos (pública)",
         "Gm": "Só o Mestre (sussurro)"
-      },
-      "LegresTimeout": {
-        "Name": "Timeout do dialog de resistência lendária",
-        "Hint": "Segundos até o dialog do Mestre recusar a queima automaticamente (só para saves em workflow)."
       }
     },
     "Diagnostics": {
@@ -46,7 +38,6 @@
     "LegRes": {
       "DialogTitle": "{name} — Resistência Lendária ({remaining}/{max})",
       "Prompt": "<strong>{name}</strong> falhou num teste de resistência (CD {dc}) contra <strong>{item}</strong> de {caster}. Queimar uma resistência lendária para transformar em sucesso?",
-      "Timeout": "Recusa automaticamente em {seconds} s.",
       "Burn": "Queimar resistência",
       "Pass": "Deixar falhar",
       "BurnMessage": "{name} queima uma Resistência Lendária e transforma a falha em sucesso ({remaining}/{max} restantes).",

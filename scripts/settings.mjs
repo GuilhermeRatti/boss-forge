@@ -13,9 +13,7 @@ const SETTINGS_SCHEMA = {
   [SETTINGS.LEGENDARY_PROMPT]: { scope: "world", type: Boolean, default: true },
   // Legendary resistance (M2)
   [SETTINGS.LEGRES_PROMPT]: { scope: "world", type: Boolean, default: true },
-  [SETTINGS.LEGRES_AUTO_BURN]: { scope: "world", type: Boolean, default: false },
-  [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] },
-  [SETTINGS.LEGRES_TIMEOUT]: { scope: "world", type: Number, default: 60, range: { min: 10, max: 300, step: 5 } }
+  [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] }
 };
 
 function capitalize(key) {

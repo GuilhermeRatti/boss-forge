@@ -21,8 +21,8 @@ Critério de aceite do briefing: quando um boss com resistência lendária **fal
 - **Boss elegível** = NPC alvo do workflow com `system.resources.legres.max > 0` e `legres.value > 0`, presente em `workflow.failedSaves`.
 - **Opt-out por ator**: `flags.boss-forge.legendary.resistPromptDisabled = true` (simétrico ao M1; togglável no dialog e via API). Vale no ator do combate (sintético em token não-vinculado) — helpers cobrem os dois lados, lição do M1.
 - **FX opcional na queima**: `flags.boss-forge.legresFx = { preset, options }` no **ator** (não em item — a queima não tem item), tocado no token do boss após confirmar. Sem flag → sem FX.
-- **Settings de módulo** (world): `legresPrompt` (boolean, default true — liga/desliga o recurso), `legresAutoBurn` (boolean, default false — queima sem dialog enquanto houver usos; decisão da revisão), `legresChatVisibility` (choices `public`/`gm`, default `public` — visibilidade da mensagem de queima; decisão da revisão), `legresTimeout` (number 10–300 s, default 60 — pedido pós-teste). Registro de settings passa a ser **declarativo** (tabela → loop, i18n derivada da chave) para organizar o crescimento previsto de configurações sem retrabalho.
-- **Timeout do dialog**: constante (60 s) com default "não queimar" — segurar o workflow trava o cast do jogador; o GM ausente não pode congelar a mesa.
+- **Settings de módulo** (world): `legresPrompt` (boolean, default true — liga/desliga o recurso) e `legresChatVisibility` (choices `public`/`gm`, default `public` — visibilidade da mensagem de queima). Registro de settings passa a ser **declarativo** (tabela → loop, i18n derivada da chave) para organizar o crescimento previsto de configurações sem retrabalho. *(`legresAutoBurn` e `legresTimeout` foram implementados e depois removidos — ver §10.)*
+- **Sem timeout no dialog** (ajuste final da revisão): a queima é decisão do GM e o dialog espera por ela; ESC/fechar = "não queimar". Sem GM ativo conectado, o relay do socketlib falha com erro capturado e o save permanece falho.
 
 ## 4. Fluxo runtime
 
@@ -36,7 +36,7 @@ midi-qol.preSavesComplete (cliente do workflow, aguardado)
    │    sim → abre o dialog localmente
    │    não → socketlib.executeAsGM("promptLegres", dados) e AGUARDA
    ├─ dialog GM: "Boss falhou (save de DES, CD 15, total 9). Queimar resistência lendária? (2/3 restantes)"
-   │    [Queimar] / [Não queimar] / [Não perguntar mais p/ este boss] / timeout 60s → não queimar
+   │    [Queimar] / [Não queimar] / [Não perguntar mais p/ este boss] (ESC/fechar = não queimar)
    └─ se queimar (executado como GM):
        ├─ update system.resources.legres.spent += 1
        ├─ mensagem no chat (pública; ver §9): "X queima uma Resistência Lendária e transforma a falha em sucesso (2 restantes)."
@@ -51,7 +51,7 @@ midi-qol.preSavesComplete (cliente do workflow, aguardado)
 
 ## 5. UX do dialog (GM)
 
-`DialogV2` (mesmo estilo interino do M1, classe CSS própria): título `"{boss} — Resistência Lendária ({restantes}/{max})"`; corpo com o contexto do save (habilidade, CD, total rolado, item/magia de origem, quem castou); botões **Queimar** (default), **Não queimar**, **Não perguntar mais para este boss**. Strings `BOSSFORGE.LegRes.*` (en + pt-BR). Barra de timeout simples (texto com contagem, sem animação — polimento vem depois).
+`DialogV2` (mesmo estilo interino do M1, classe CSS própria): título `"{boss} — Resistência Lendária ({restantes}/{max})"`; corpo com o contexto do save (habilidade, CD, total rolado, item/magia de origem, quem castou); botões **Queimar** (default), **Não queimar**, **Não perguntar mais para este boss**. Strings `BOSSFORGE.LegRes.*` (en + pt-BR). Sem timer no dialog (ajuste final — ver §10).
 
 ## 6. API
 
@@ -62,7 +62,7 @@ midi-qol.preSavesComplete (cliente do workflow, aguardado)
 ## 7. Casos de borda mapeados
 
 - `legres.value === 0` ao chegar a vez do boss (queimou tudo em decisão anterior do mesmo save) → pula sem dialog.
-- GM desconectado / sem GM ativo → timeout aplica "não queimar"; log debug.
+- GM desconectado / sem GM ativo → o `executeAsGM` falha, o erro é capturado e o save permanece falho; log debug.
 - Workflow abortado enquanto o dialog está aberto → resposta descartada com segurança (guard por `workflow.id`).
 - Boss derrotado no meio do fluxo → ainda pergunta (HP não importa para legres; save pode ser de efeito persistente).
 - Save com sucesso já (não está em `failedSaves`) → nunca pergunta.
@@ -83,8 +83,7 @@ Boss com `legres 3` + PC com magia de save (ex.: *Fireball* ou *Toll the Dead*).
 
 O teste do usuário revelou que a mesa rola saves de monstro **fora do workflow** (privados, direto da ficha/card) — caminho em que o M2 original era inerte de propósito e onde o **botão nativo do dnd5e no card** ("Used Legendary Resistance") cobre a queima manual com fricção baixa (preferido pelo usuário ao dialog). Ajustes incorporados:
 
-1. **Anúncio desacoplado da visibilidade do save**: ouvinte de `updateChatMessage` detecta `flags.dnd5e.roll.forceSuccess = true` (botão nativo ou auto-burn) e publica a mensagem de queima conforme `legresChatVisibility`, mesmo com o save privado. O caminho workflow segue anunciando direto (sem `forceSuccess` ⇒ sem duplicidade).
-2. **Auto-burn cobre o caminho nativo**: `createChatMessage` de card de save do dnd5e **com CD explícita em todos os rolls** e falha ⇒ `actor.system.resistSave(message)` (GM ativo; ignora cards com `flags["midi-qol"]`, que pertencem ao workflow — sem queima dupla). Sem CD não há queima automática (falha indeterminável).
-3. **Timeout configurável**: `legresTimeout` (10–300 s, default 60).
+1. **Anúncio desacoplado da visibilidade do save**: ouvinte de `updateChatMessage` detecta `flags.dnd5e.roll.forceSuccess = true` (botão nativo) e publica a mensagem de queima conforme `legresChatVisibility` — e toca o FX do ator — mesmo com o save privado. O caminho workflow segue anunciando direto (sem `forceSuccess` ⇒ sem duplicidade).
+2. **Auto-burn e timeout: implementados e REMOVIDOS** a pedido do usuário no mesmo dia ("essas funcionalidades não me parecem boas") — filosofia da mesa: automação mínima, GM no controle, sem timers artificiais. O dialog do workflow espera a decisão do GM (ESC = não queimar); a queima manual de rolls avulsos fica no botão nativo do card, que o usuário prefere.
 
-**M2 ACEITO em 2026-07-04** — nas palavras do usuário, "podemos riscar o M2 do roadmap": o conjunto dialog-no-workflow + botão nativo no card atende a mesa sem fricção relevante.
+**M2 ACEITO em 2026-07-04** — nas palavras do usuário, "podemos riscar o M2 do roadmap": o conjunto dialog-no-workflow + botão nativo no card (com anúncio/FX do Boss Forge) atende a mesa sem fricção relevante.

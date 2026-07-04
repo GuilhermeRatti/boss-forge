@@ -13,19 +13,11 @@
         "Name": "Legendary resistance prompt",
         "Hint": "When a boss with legendary resistances fails a saving throw inside a Midi-QOL workflow, ask the GM whether to burn one before damage applies."
       },
-      "LegresAutoBurn": {
-        "Name": "Auto-burn legendary resistance",
-        "Hint": "Burn a legendary resistance automatically (no dialog) while uses remain."
-      },
       "LegresChatVisibility": {
         "Name": "Legendary resistance chat message",
         "Hint": "Who sees the chat message when a legendary resistance is burned.",
         "Public": "Everyone (public)",
         "Gm": "GM only (whisper)"
-      },
-      "LegresTimeout": {
-        "Name": "Legendary resistance dialog timeout",
-        "Hint": "Seconds before the GM dialog auto-declines the burn (workflow saves only)."
       }
     },
     "Diagnostics": {
@@ -46,7 +38,6 @@
     "LegRes": {
       "DialogTitle": "{name} — Legendary Resistance ({remaining}/{max})",
       "Prompt": "<strong>{name}</strong> failed a saving throw (DC {dc}) against <strong>{item}</strong> from {caster}. Burn a legendary resistance to succeed instead?",
-      "Timeout": "Auto-declines in {seconds} s.",
       "Burn": "Burn resistance",
       "Pass": "Let it fail",
       "BurnMessage": "{name} burns a Legendary Resistance and turns the failure into a success ({remaining}/{max} remaining).",
