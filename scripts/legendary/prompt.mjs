@@ -1,7 +1,6 @@
 import { MODULE_ID, FLAGS } from "../constants.mjs";
-import { log } from "../logger.mjs";
 import { escapeHtml } from "../utils.mjs";
-import { playPreset } from "../fx/presets.mjs";
+import { playItemFx } from "./item-fx.mjs";
 import { getLegendaryActivities, getLegendaryResource } from "./activities.mjs";
 
 /**
@@ -98,36 +97,3 @@ async function showDialog({ actor, legact, entries, used, triggerName }) {
   });
 }
 
-/**
- * Play the FX preset configured on the item (flags.boss-forge.fx), if any.
- * FX failures never propagate into the action economy.
- * @param {Item} item
- * @param {Combatant} combatant
- */
-async function playItemFx(item, combatant) {
-  const fx = item.getFlag(MODULE_ID, FLAGS.FX);
-  if (!fx?.preset) return;
-  const { at, ...options } = fx.options ?? {};
-  const locations = resolveLocations(at, combatant);
-  if (!locations.length) {
-    log.debug(`FX: no locations resolved for "${item.name}" (at: ${at}).`);
-    return;
-  }
-  await playPreset(fx.preset, { ...options, locations });
-}
-
-/**
- * "boss" (default) plays on the boss token; "targets" plays on the GM's
- * currently targeted tokens, falling back to the boss token.
- * @param {"boss"|"targets"|undefined} at
- * @param {Combatant} combatant
- * @returns {Array<object>}
- */
-function resolveLocations(at, combatant) {
-  if (at === "targets") {
-    const targets = [...game.user.targets];
-    if (targets.length) return targets;
-  }
-  const token = combatant.token?.object ?? combatant.token;
-  return token ? [token] : [];
-}

@@ -20,22 +20,31 @@ export function getLegendaryResource(actor) {
  */
 
 /**
- * All activities with activation type "legendary" across the actor's items,
- * cheapest first.
+ * All activities with the given activation type across the actor's items.
  * @param {Actor} actor
+ * @param {string} type  dnd5e activation type (e.g. "legendary", "lair")
  * @returns {LegendaryActivityEntry[]}
  */
-export function getLegendaryActivities(actor) {
+export function getActivitiesByActivationType(actor, type) {
   const entries = [];
   for (const item of actor?.items ?? []) {
     const activities = item.system?.activities;
     if (!activities) continue;
     for (const activity of activities) {
-      if (activity.activation?.type !== "legendary") continue;
+      if (activity.activation?.type !== type) continue;
       entries.push({ item, activity, cost: Math.max(activity.activation.value ?? 1, 1) });
     }
   }
   return entries.sort((a, b) => (a.cost - b.cost) || a.item.name.localeCompare(b.item.name));
+}
+
+/**
+ * All legendary activities across the actor's items, cheapest first.
+ * @param {Actor} actor
+ * @returns {LegendaryActivityEntry[]}
+ */
+export function getLegendaryActivities(actor) {
+  return getActivitiesByActivationType(actor, "legendary");
 }
 
 /**

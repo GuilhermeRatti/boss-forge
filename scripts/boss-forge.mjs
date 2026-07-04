@@ -10,11 +10,21 @@ import {
   clearActorLegresFx
 } from "./legendary/resistance.mjs";
 import { playPreset, listPresets, presetExists } from "./fx/presets.mjs";
+import {
+  registerLairOrchestrator,
+  setInside,
+  markScene,
+  clearScene,
+  setLairPromptEnabled,
+  setActorLairFx,
+  clearActorLairFx
+} from "./lair.mjs";
 
 Hooks.once("init", () => {
   registerSettings();
   registerLegendaryOrchestrator();
   registerLegendaryResistance();
+  registerLairOrchestrator();
   log.info("Initialized.");
 });
 
@@ -35,6 +45,14 @@ Hooks.once("ready", () => {
       setPromptEnabled,
       setActorLegresFx,
       clearActorLegresFx
+    }),
+    lair: Object.freeze({
+      setInside,
+      markScene,
+      clearScene,
+      setPromptEnabled: setLairPromptEnabled,
+      setActorLairFx,
+      clearActorLairFx
     })
   });
   log.info(`Ready (version ${module.version}).`);

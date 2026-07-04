@@ -13,7 +13,9 @@ const SETTINGS_SCHEMA = {
   [SETTINGS.LEGENDARY_PROMPT]: { scope: "world", type: Boolean, default: true },
   // Legendary resistance (M2)
   [SETTINGS.LEGRES_ANNOUNCE]: { scope: "world", type: Boolean, default: true },
-  [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] }
+  [SETTINGS.LEGRES_CHAT_VISIBILITY]: { scope: "world", type: String, default: "public", choices: ["public", "gm"] },
+  // Lair (M3)
+  [SETTINGS.LAIR_PROMPT]: { scope: "world", type: Boolean, default: true }
 };
 
 function capitalize(key) {

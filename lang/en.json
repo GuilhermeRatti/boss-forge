@@ -18,6 +18,10 @@
         "Hint": "Who sees the chat message when a legendary resistance is burned.",
         "Public": "Everyone (public)",
         "Gm": "GM only (whisper)"
+      },
+      "LairPrompt": {
+        "Name": "Lair orchestration",
+        "Hint": "Ask about lair mode at combat start (2024 rules, native +1 legendary action/resistance while inside) and prompt lair actions when initiative passes the boss's lair count (2014 rules)."
       }
     },
     "Diagnostics": {
@@ -37,6 +41,19 @@
     },
     "LegRes": {
       "BurnMessage": "{name} burns a Legendary Resistance and turns the failure into a success."
+    },
+    "Lair": {
+      "InsideDialogTitle": "{name} — Lair",
+      "InsideDialogPrompt": "<strong>{name}</strong> has a lair. Is this fight taking place inside it? While inside, dnd5e natively grants +1 max legendary action and resistance.",
+      "InsideYes": "Yes, inside the lair",
+      "InsideNo": "No",
+      "Activated": "<strong>{name}</strong> is fighting inside its lair: +1 legendary action and resistance (native dnd5e adjustment). Boss Forge will revert the toggle when this combat ends.",
+      "AutoActivated": "<strong>{name}</strong> is fighting inside its lair — the scene \"{scene}\" is marked as its lair. +1 legendary action and resistance; the toggle reverts when combat ends.",
+      "Deactivated": "Combat ended: <strong>{name}</strong> is no longer inside its lair (module-set toggle reverted).",
+      "ActionsDialogTitle": "Lair Actions — {name} (initiative {initiative})",
+      "ActionsPrompt": "Initiative count {initiative}, round {round}: <strong>{name}</strong> may take a lair action.",
+      "SceneMarked": "Scene \"{scene}\" marked as the lair of {name}.",
+      "SceneCleared": "Lair mark cleared from scene \"{scene}\"."
     }
   }
 }

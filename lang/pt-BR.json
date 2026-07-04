@@ -18,6 +18,10 @@
         "Hint": "Quem vê a mensagem no chat quando uma resistência lendária é queimada.",
         "Public": "Todos (pública)",
         "Gm": "Só o Mestre (sussurro)"
+      },
+      "LairPrompt": {
+        "Name": "Orquestração de covil",
+        "Hint": "Pergunta sobre modo covil no início do combate (regras 2024, +1 ação/resistência lendária nativo enquanto dentro) e oferece as ações de covil quando a iniciativa passa pela contagem do boss (regras 2014)."
       }
     },
     "Diagnostics": {
@@ -37,6 +41,19 @@
     },
     "LegRes": {
       "BurnMessage": "{name} queima uma Resistência Lendária e transforma a falha em sucesso."
+    },
+    "Lair": {
+      "InsideDialogTitle": "{name} — Covil",
+      "InsideDialogPrompt": "<strong>{name}</strong> tem um covil. Esta luta acontece dentro dele? Enquanto dentro, o dnd5e concede nativamente +1 no máximo de ações e resistências lendárias.",
+      "InsideYes": "Sim, dentro do covil",
+      "InsideNo": "Não",
+      "Activated": "<strong>{name}</strong> está lutando dentro do covil: +1 ação e resistência lendária (ajuste nativo do dnd5e). O Boss Forge desfaz o toggle quando este combate terminar.",
+      "AutoActivated": "<strong>{name}</strong> está lutando dentro do covil — a cena \"{scene}\" está marcada como covil dele. +1 ação e resistência lendária; o toggle desfaz ao fim do combate.",
+      "Deactivated": "Combate encerrado: <strong>{name}</strong> não está mais dentro do covil (toggle do módulo revertido).",
+      "ActionsDialogTitle": "Ações de Covil — {name} (iniciativa {initiative})",
+      "ActionsPrompt": "Contagem de iniciativa {initiative}, round {round}: <strong>{name}</strong> pode usar uma ação de covil.",
+      "SceneMarked": "Cena \"{scene}\" marcada como covil de {name}.",
+      "SceneCleared": "Marca de covil removida da cena \"{scene}\"."
     }
   }
 }
