@@ -7,18 +7,18 @@ Comunicação com o usuário: **PT-BR**, técnica e direta, honestidade sobre in
 ## Estado atual
 
 - **M0 entregue, aguardando aceite do usuário.** Não abrir M1 sem aceite explícito.
-- Pendência bloqueante leve: saída da macro de diagnóstico (→ commitar em `docs/environment.md`, pinar versões no README).
+- Diagnóstico M0 executado em **2026-07-04** e registrado em `docs/environment.md` (versões pinadas lá e no README). Discrepância aberta: **JB2A Patreon não está instalado** (database do Sequencer só tem `blfx`) — decisão do usuário pendente: instalar JB2A ou presets só sobre `blfx.*`. Combat Carousel também ausente (cosmético, sem impacto).
 - Repo GitHub: `https://github.com/GuilhermeRatti/boss-forge` (criado e com main publicada pelo próprio usuário; no Windows o clone vai na pasta `boss-forge` — id do módulo).
-- **Adiantado sem quebrar o gate**: pesquisa §9 do M1/M2 concluída (`docs/research/2026-07-03-m1-dnd5e-5.3.3.md`, `…-foundry-v13-combat-hooks.md`, `…-m2-midi-qol-v13.md`, `…-sequencer-effects.md`; referência dnd5e 5.3.3 provisória — re-verificar na tag do diagnóstico) e design do M1 em `docs/design/m1-ciclo-acao-lendaria.md` aguardando revisão. Fatos-chave: reset de legact e consumo via activity (activation.type "legendary") são NATIVOS do dnd5e; covil 2024 = toggle nativo `lair.inside`; dnd5e tem `resistSave()` nativo p/ M2; gancho do orquestrador = `combatTurnChange` + guarda de GM ativo.
-- Setup de máquinas: código editado **nesta máquina Linux**; o Foundry roda em **outra máquina, Windows 11**. A ponte é git: clone do repo direto em `Data\modules\boss-forge` no Windows, atualização por `git pull` + `npm run packs:build` (mundo fechado) — ver DEVELOPMENT.md §2. Não há Foundry local para testar.
+- **Adiantado sem quebrar o gate**: pesquisa §9 do M1/M2 concluída (`docs/research/2026-07-03-m1-dnd5e-5.3.3.md`, `…-foundry-v13-combat-hooks.md`, `…-m2-midi-qol-v13.md`, `…-sequencer-effects.md`; referência dnd5e 5.3.3 **confirmada pelo diagnóstico**) e design do M1 em `docs/design/m1-ciclo-acao-lendaria.md` aguardando revisão. Fatos-chave: reset de legact e consumo via activity (activation.type "legendary") são NATIVOS do dnd5e; covil 2024 = toggle nativo `lair.inside`; dnd5e tem `resistSave()` nativo p/ M2; gancho do orquestrador = `combatTurnChange` + guarda de GM ativo.
+- Setup de máquinas (**atualizado 2026-07-04**): código e Foundry agora na **mesma máquina Windows 11** — repo em `C:\Users\guira\OneDrive\Documentos\GitHub\boss-forge`, Foundry em `%LOCALAPPDATA%\FoundryVTT`. O módulo ativo no Foundry veio de **instalação via manifest da release v0.0.1** (pipeline de release validado de ponta a ponta), não de clone git; para testar código não-released, usar a junction do DEVELOPMENT.md §2.4. Setup antigo (código no Linux) segue documentado como alternativa.
 
 ## Ambiente-alvo (fatos pinados)
 
-- **Foundry VTT v13** — não migrar para v14 até o ecossistema Midi estabilizar; código forward-compatible.
-- **dnd5e "moderno"** (regras 2024, errata set/2024). Versão exata: pendente (diagnóstico).
-- Módulos da mesa: Midi-QOL, DAE, Combat Carousel, BLFX Premium, JB2A Patreon, Sequencer.
-- **Automated Animations está FORA do stack 5e por decisão** (conflito de nicho com BLFX). Boss Forge fala com o Sequencer diretamente. AA é de OUTRO projeto do usuário (Tormenta 20) — não misturar.
-- Assets registrados no database do Sequencer com prefixos `jb2a.*` e `blfx.*` (exatos a confirmar no diagnóstico).
+- **Foundry VTT v13, build 13.351** (diagnóstico 2026-07-04) — não migrar para v14 até o ecossistema Midi estabilizar; código forward-compatible.
+- **dnd5e 5.3.3** "moderno" (regras 2024, errata set/2024) — pinado pelo diagnóstico; igual à tag da pesquisa M1.
+- Módulos ativos da mesa (versões completas em `docs/environment.md`): Midi-QOL 13.0.63, DAE 13.0.29, Sequencer 4.2.2, BLFX (blfx-assets-pack01 + boss-loot-assets-premium), libWrapper, socketlib. **JB2A Patreon e Combat Carousel constavam do stack presumido mas NÃO estão instalados.**
+- **Automated Animations está FORA do stack 5e por decisão** (conflito de nicho com BLFX; presente no disco, inativo no mundo dnd5e). Boss Forge fala com o Sequencer diretamente. AA é de OUTRO projeto do usuário (Tormenta 20) — não misturar.
+- Database do Sequencer: **apenas o prefixo `blfx`** — nenhum default `jb2a.*` pode ser assumido; presets validam paths com `Sequencer.Database.entryExists()`.
 
 ## Arquitetura (decidida)
 
@@ -48,6 +48,7 @@ Não-objetivos: reimplementar automação coberta por Midi/CPR/BLFX; nada player
 - **Midi-QOL**: `gitlab.com/tposney/midi-qol` — nomes/assinaturas reais dos hooks de workflow. Nomes de memória são presumidos errados até prova em contrário.
 - **Sequencer**: wiki oficial (fantasycomputer.works) + código no GitHub (`fantasycalendar/FoundryVTT-Sequencer`).
 - **Foundry v13**: docs oficiais; conferir deprecations.
+- Atalho do setup atual: a build **instalada** (a que de fato roda) está legível em `%LOCALAPPDATA%\FoundryVTT\Data\systems\dnd5e` e `…\Data\modules\{midi-qol,sequencer,dae}` — bundles compilados com sourcemaps; usar como tira-teima da versão exata (o repo no tag continua melhor para navegar).
 
 Verificações já feitas: `docs/research/`.
 
@@ -62,7 +63,7 @@ Verificações já feitas: `docs/research/`.
 
 ## Workflow com o usuário
 
-- O agente **não tem Foundry**; o usuário executa os testes. Toda entrega inclui: (a) roteiro de teste numerado, (b) logging debug atrás do setting `boss-forge.debug`, (c) macro de diagnóstico atualizada se necessário.
+- O Foundry está instalado nesta máquina, mas o agente **não executa testes nele** (sessão interativa no navegador) — o usuário executa os testes. Toda entrega inclui: (a) roteiro de teste numerado, (b) logging debug atrás do setting `boss-forge.debug`, (c) macro de diagnóstico atualizada se necessário.
 - Em bug: pedir **UMA colagem** (diagnóstico + stack trace do console), não pingue-pongue de perguntas.
 - Usuário: mestre 5e (regras 2024), engenheiro em formação, confortável com F12 e git básico; hoje faz tudo com macros à mão.
 

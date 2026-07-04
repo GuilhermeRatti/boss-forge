@@ -15,9 +15,11 @@ Quando você ativa o módulo num mundo, o Foundry carrega esses arquivos no nave
 
 ## 2. Setup do ambiente de desenvolvimento
 
-**Configuração real deste projeto: o código é editado no Linux e o Foundry roda em OUTRA máquina, com Windows 11.** O git faz a ponte entre as duas — o repo no GitHub é a fonte da verdade, e no Windows o clone vive direto dentro da pasta de módulos do Foundry.
+**Configuração atual (desde 2026-07-04): código e Foundry rodam na MESMA máquina, Windows 11.** O repo de trabalho vive fora da pasta do Foundry (`C:\Users\guira\OneDrive\Documentos\GitHub\boss-forge`) e o módulo hoje instalado no Foundry veio do **manifest da release v0.0.1** — ótimo para rodar releases, mas não expõe código em desenvolvimento. Para testar código não-released, use a junction da seção 2.4.
 
-### 2.1. Máquina de código (Linux — já pronta)
+O fluxo original de duas máquinas (código no Linux, Foundry em outra máquina Windows) segue documentado nas seções 2.1–2.3 como alternativa, caso o desenvolvimento volte a ser remoto.
+
+### 2.1. Máquina de código (Linux — alternativa)
 
 Pré-requisitos: git e Node.js (≥ 18; o repo foi criado com Node 22). O repo local já tem `npm install` e `npm run packs:build` executados. Fluxo: editar → commit → `git push`.
 
@@ -50,23 +52,32 @@ npm run packs:build
 
 O `packs:build` só é obrigatório quando algo em `packs/_source/` mudou (as entregas avisam quando for o caso), mas rodar sempre é rápido e inofensivo. Mudança só de código `.mjs` não precisa de build: `git pull` + F5 basta, mesmo com o mundo aberto.
 
-### 2.4. Alternativa para Foundry na MESMA máquina do código
+### 2.4. Foundry na MESMA máquina do código (setup atual)
 
-Se um dia o Foundry rodar na máquina de desenvolvimento, troque o clone dentro de `Data/modules` por um link simbólico para o repo de trabalho:
+Com código e Foundry na mesma máquina, troque a instalação do módulo por uma **junction** apontando para o repo de trabalho — a pasta do módulo passa a SER o repo, e cada edição fica visível no Foundry com um F5:
 
-```bash
-# Linux/macOS
-ln -s "/home/guilhermeratti/Área de trabalho/Boss Forge" "$HOME/.local/share/FoundryVTT/Data/modules/boss-forge"
-```
+1. **Desinstale/remova o módulo instalado primeiro** (via Foundry ou apagando `%LOCALAPPDATA%\FoundryVTT\Data\modules\boss-forge`) — o `mklink` falha se a pasta já existir. Desativar o módulo no mundo não é necessário; o id continua o mesmo.
+2. No prompt de comando (junction não exige admin):
 
 ```bat
-:: Windows (junction; não exige admin)
-mklink /J "%LOCALAPPDATA%\FoundryVTT\Data\modules\boss-forge" "C:\caminho\para\o\repo\boss-forge"
+mklink /J "%LOCALAPPDATA%\FoundryVTT\Data\modules\boss-forge" "C:\Users\guira\OneDrive\Documentos\GitHub\boss-forge"
 ```
+
+3. No repo, rode `npm install` (uma vez) e `npm run packs:build` para os compêndios existirem localmente.
+
+Cuidados com o repo dentro do OneDrive: marque a pasta como **"Sempre manter neste dispositivo"** (Files On-Demand pode deixar arquivos como placeholder e o Foundry não os lê) e, se `npm run packs:build` reclamar de arquivo travado em `packs/`, pause a sincronização do OneDrive durante o build (o lock de LevelDB + sync simultâneo pode conflitar).
+
+No Linux/macOS o equivalente é um symlink:
+
+```bash
+ln -s "/caminho/para/o/repo/boss-forge" "$HOME/.local/share/FoundryVTT/Data/modules/boss-forge"
+```
+
+> Para voltar a rodar releases "de verdade" (ex.: validar um zip publicado), remova a junction (`rmdir`, que não apaga o alvo) e reinstale pelo manifest.
 
 ## 3. Ciclo de desenvolvimento
 
-1. Edite o código no repo (Linux) e faça push; atualize o clone no Windows (seção 2.3).
+1. Edite o código no repo. Com a junction (seção 2.4), a pasta do módulo já reflete a edição na hora; no fluxo de duas máquinas, faça push e atualize o clone no Windows (seção 2.3).
 2. No Foundry, pressione **F5** (recarrega o cliente; módulos são recarregados do disco).
 3. Teste. Abra o console com **F12** — o critério permanente de aceite é console limpo: sem erros e sem *deprecation warnings*.
 4. Para logs detalhados, ative **Configurações → Boss Forge → Log de depuração**. Mensagens do módulo têm o prefixo `Boss Forge |`.
