@@ -22,15 +22,33 @@ export function registerLegendaryOrchestrator() {
 /**
  * Enable/disable the legendary prompt for one boss (the "Don't ask again"
  * opt-out flag). Takes effect at the next turn change.
- * @param {Actor} actor
+ *
+ * Unlinked tokens split a boss into a world actor plus per-token synthetic
+ * actors (the combat uses the synthetic one, and its ActorDelta overrides the
+ * world actor's flags). Apply to every side so the toggle works no matter
+ * which reference was passed.
+ * @param {Actor} actor              World actor or a token's synthetic actor.
  * @param {boolean} [enabled=true]
  */
 export async function setPromptEnabled(actor, enabled = true) {
   if (!(actor instanceof Actor)) {
-    throw new Error("setPromptEnabled: first argument must be an Actor (check game.actors.getName — it is case-sensitive).");
+    throw new Error(
+      "setPromptEnabled: first argument must be an Actor. Tip: select the boss token and pass canvas.tokens.controlled[0].actor."
+    );
   }
-  if (enabled) await actor.unsetFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED);
-  else await actor.setFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED, true);
+  const targets = new Set([actor]);
+  if (actor.isToken) {
+    const base = actor.token?.baseActor;
+    if (base) targets.add(base);
+  } else {
+    for (const tokenDoc of actor.getActiveTokens(false, true)) {
+      if (tokenDoc.actor) targets.add(tokenDoc.actor);
+    }
+  }
+  for (const target of targets) {
+    if (enabled) await target.unsetFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED);
+    else await target.setFlag(MODULE_ID, FLAGS.LEGENDARY_PROMPT_DISABLED, true);
+  }
   return actor;
 }
 

@@ -23,7 +23,7 @@
       "UsedBadge": " — used ×{count}",
       "Skip": "Skip",
       "OptOut": "Don't ask again for this boss",
-      "OptOutConfirmed": "Boss Forge will no longer prompt legendary actions for {name}. Undo with: game.modules.get(\"boss-forge\").api.legendary.setPromptEnabled(actor)"
+      "OptOutConfirmed": "Boss Forge will no longer prompt legendary actions for {name}. Undo (with the boss token selected): game.modules.get(\"boss-forge\").api.legendary.setPromptEnabled(canvas.tokens.controlled[0].actor)"
     }
   }
 }

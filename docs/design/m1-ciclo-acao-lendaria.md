@@ -23,6 +23,7 @@ Sem Designer ainda; tudo derivado do ator + uma flag opcional:
 
 - **Boss elegível** = NPC no combate com `system.resources.legact.max > 0` **e** ≥ 1 activity com `activation.type === "legendary"` em seus itens.
 - **Opt-out por ator**: `flags.boss-forge.legendary.promptDisabled = true` (togglável pelo dialog, "não perguntar mais para este boss").
+  - **Tokens não-vinculados** (padrão de NPC): o combate usa o ator **sintético do token** (ActorDelta), não o do diretório — o botão grava a flag no sintético, e um unset feito só no ator do mundo não tem efeito (o delta prevalece). Aprendido no teste de 2026-07-04; `api.legendary.setPromptEnabled` aplica o toggle aos dois lados (mundo + tokens ativos na cena), e snippets de macro devem preferir `canvas.tokens.controlled[0].actor`.
 - **FX por item (opcional)**: `flags.boss-forge.fx = { preset: string, options: object }` no item da ação lendária. Sem flag → sem FX (nada quebra). No M1 o GM seta a flag via macro/API; UI de edição vem com o Designer.
 - **Setting de módulo**: `boss-forge.legendaryPrompt` (world, boolean, default true) — liga/desliga o prompt globalmente.
 

@@ -23,7 +23,7 @@
       "UsedBadge": " — usada ×{count}",
       "Skip": "Pular",
       "OptOut": "Não perguntar mais para este boss",
-      "OptOutConfirmed": "O Boss Forge não vai mais perguntar pelas ações lendárias de {name}. Para desfazer: game.modules.get(\"boss-forge\").api.legendary.setPromptEnabled(ator)"
+      "OptOutConfirmed": "O Boss Forge não vai mais perguntar pelas ações lendárias de {name}. Para desfazer (com o token do boss selecionado): game.modules.get(\"boss-forge\").api.legendary.setPromptEnabled(canvas.tokens.controlled[0].actor)"
     }
   }
 }
