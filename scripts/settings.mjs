@@ -9,4 +9,13 @@ export function registerSettings() {
     type: Boolean,
     default: false
   });
+
+  game.settings.register(MODULE_ID, SETTINGS.LEGENDARY_PROMPT, {
+    name: "BOSSFORGE.Settings.LegendaryPrompt.Name",
+    hint: "BOSSFORGE.Settings.LegendaryPrompt.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 }

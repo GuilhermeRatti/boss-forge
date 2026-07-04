@@ -1,0 +1,53 @@
+/**
+ * Read helpers for the dnd5e legendary action economy (dnd5e 5.3.3).
+ * See docs/research/2026-07-03-m1-dnd5e-5.3.3.md and
+ * docs/research/2026-07-04-m1-fontes-instaladas.md.
+ */
+
+/**
+ * @param {Actor} actor
+ * @returns {{value: number, max: number, spent: number}|null}
+ */
+export function getLegendaryResource(actor) {
+  return actor?.system?.resources?.legact ?? null;
+}
+
+/**
+ * @typedef {object} LegendaryActivityEntry
+ * @property {Item} item
+ * @property {object} activity   dnd5e Activity (pseudo-document)
+ * @property {number} cost       Legendary action cost (activation.value, min 1)
+ */
+
+/**
+ * All activities with activation type "legendary" across the actor's items,
+ * cheapest first.
+ * @param {Actor} actor
+ * @returns {LegendaryActivityEntry[]}
+ */
+export function getLegendaryActivities(actor) {
+  const entries = [];
+  for (const item of actor?.items ?? []) {
+    const activities = item.system?.activities;
+    if (!activities) continue;
+    for (const activity of activities) {
+      if (activity.activation?.type !== "legendary") continue;
+      entries.push({ item, activity, cost: Math.max(activity.activation.value ?? 1, 1) });
+    }
+  }
+  return entries.sort((a, b) => (a.cost - b.cost) || a.item.name.localeCompare(b.item.name));
+}
+
+/**
+ * A combatant is an eligible boss when its actor has a legendary action pool
+ * and at least one legendary activity to spend it on.
+ * @param {Combatant} combatant
+ * @returns {boolean}
+ */
+export function isEligibleBoss(combatant) {
+  const actor = combatant?.actor;
+  if (!actor) return false;
+  const legact = getLegendaryResource(actor);
+  if (!legact || !(legact.max > 0)) return false;
+  return getLegendaryActivities(actor).length > 0;
+}

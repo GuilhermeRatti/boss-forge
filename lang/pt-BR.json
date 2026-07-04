@@ -4,6 +4,10 @@
       "Debug": {
         "Name": "Log de depuração",
         "Hint": "Imprime mensagens de depuração detalhadas do Boss Forge no console do navegador (F12)."
+      },
+      "LegendaryPrompt": {
+        "Name": "Prompt de ações lendárias",
+        "Hint": "Ao fim do turno de cada outra criatura, pergunta ao Mestre pelas ações lendárias disponíveis do boss."
       }
     },
     "Diagnostics": {
@@ -11,6 +15,15 @@
       "Instructions": "Copie o relatório completo abaixo ao reportar problemas. Ele também foi impresso no console (F12) e copiado para a área de transferência.",
       "Close": "Fechar",
       "Copied": "Boss Forge: relatório de diagnóstico copiado para a área de transferência."
+    },
+    "Legendary": {
+      "DialogTitle": "{name} — Ações Lendárias ({remaining}/{max})",
+      "Prompt": "Fim do turno de {trigger}: <strong>{name}</strong> tem {remaining} de {max} ações lendárias disponíveis.",
+      "UseLabel": "{name} (custo {cost})",
+      "UsedBadge": " — usada ×{count}",
+      "Skip": "Pular",
+      "OptOut": "Não perguntar mais para este boss",
+      "OptOutConfirmed": "O Boss Forge não vai mais perguntar pelas ações lendárias de {name}. Para desfazer, limpe a flag \"boss-forge.legendary.promptDisabled\" do ator."
     }
   }
 }
