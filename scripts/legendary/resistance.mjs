@@ -60,7 +60,7 @@ async function playActorLegresFx(actor, tokenDoc) {
   if (!fx) return;
   const token = tokenDoc?.object ?? tokenDoc;
   if (!token) return;
-  await playFx(fx.steps ?? fx, { locations: [token], source: token });
+  await playFx(fx, { locations: [token], source: token });
 }
 
 /* -------------------------------------------- */

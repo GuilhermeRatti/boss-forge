@@ -1,6 +1,9 @@
 <div class="bf-layout">
   <nav class="bf-rail">
-    <p class="bf-rail-header">{{localize "BOSSFORGE.FxCatalog.PresetsHeader"}}</p>
+    <p class="bf-rail-header">
+      <img src="modules/boss-forge/assets/emblem.svg" class="bf-rail-emblem" alt="" />
+      {{localize "BOSSFORGE.FxCatalog.PresetsHeader"}}
+    </p>
     {{#each presets}}
     <div class="bf-preset-card {{#if active}}active{{/if}}" data-action="selectPreset" data-preset="{{id}}">
       <i class="{{icon}}"></i>
@@ -41,8 +44,8 @@
                value="{{value}}" step="any" />
         {{/if}}
         {{#if isColor}}
-        <input type="color" id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
-               value="{{value}}" class="bf-color" />
+        <bf-color-wheel id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}"
+                        value="{{value}}" class="bf-color-wheel"></bf-color-wheel>
         {{/if}}
         {{#if isSelect}}
         <select id="bf-param-{{key}}" data-param="{{key}}" data-type="{{type}}">
@@ -65,7 +68,10 @@
     <p class="bf-context">{{localize "BOSSFORGE.FxCatalog.StepsHint"}}</p>
     <div class="bf-steps">
       {{#each steps}}
-      <div class="bf-step-chip">
+      <div class="bf-step-chip" data-index="{{index}}">
+        <span class="bf-step-grip" draggable="true" data-tooltip="{{localize 'BOSSFORGE.FxCatalog.DragStep'}}">
+          <i class="fa-solid fa-grip-vertical"></i>
+        </span>
         <span class="bf-step-order">{{order}}</span>
         <i class="{{icon}}"></i>
         <span class="bf-step-name">{{name}}</span>
@@ -73,6 +79,12 @@
           <select name="stepAt" data-index="{{index}}">
             {{#each anchors}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
           </select>
+        </label>
+        <label class="bf-step-delay" data-tooltip="{{localize 'BOSSFORGE.FxCatalog.StepFitHint'}}">{{localize "BOSSFORGE.FxCatalog.StepFit"}}
+          <span class="bf-switch">
+            <input type="checkbox" name="stepFit" data-index="{{index}}" {{#if fit}}checked{{/if}} />
+            <span class="bf-slider"></span>
+          </span>
         </label>
         <label class="bf-step-delay">{{localize "BOSSFORGE.FxCatalog.StepDelay"}}
           <input type="number" name="stepDelay" data-index="{{index}}" value="{{delay}}" step="100" min="0" />

@@ -40,15 +40,19 @@ export function describePreset(name) {
 
 /**
  * Normalize an FX flag config into a list of steps.
- * Accepted shapes: {preset, options, delay?}, an array of those, or
- * {steps: [...]}. Returns [] for anything else.
+ * Accepted shapes: {preset, options, delay?, at?, fit?}, an array of those,
+ * or {steps: [...], at?} — a wrapper-level `at` becomes the default anchor
+ * for steps that do not set their own. Returns [] for anything else.
  * @param {object|Array} config
- * @returns {Array<{preset: string, options?: object, delay?: number}>}
+ * @returns {Array<{preset: string, options?: object, delay?: number, at?: string, fit?: boolean}>}
  */
 export function normalizeFxSteps(config) {
   if (!config) return [];
+  const wrapperAt = (!Array.isArray(config) && Array.isArray(config.steps)) ? config.at : undefined;
   const steps = Array.isArray(config) ? config : (Array.isArray(config.steps) ? config.steps : [config]);
-  return steps.filter(s => s && typeof s.preset === "string");
+  return steps
+    .filter(s => s && typeof s.preset === "string")
+    .map(s => (wrapperAt && !(s.at ?? s.options?.at)) ? { ...s, at: wrapperAt } : s);
 }
 
 /**
@@ -65,7 +69,7 @@ export function normalizeFxSteps(config) {
 export async function playFx(config, context = {}) {
   const steps = normalizeFxSteps(config);
   if (!steps.length) return false;
-  const { locations = [], source, targets } = context;
+  const { locations = [], source, targets, template } = context;
 
   let offset = 0;
   const runs = steps.map(step => {
@@ -75,9 +79,12 @@ export async function playFx(config, context = {}) {
       ? (targets?.length ? targets : locations)
       : at === "boss"
         ? (source ? [source] : locations)
-        : locations;
+        : at === "template"
+          ? (template ? [template] : locations)
+          : locations;
     const options = { ...(step.options ?? {}) };
     delete options.at;
+    if (step.fit) options.fit = true;
     const when = offset;
     return new Promise(resolve => {
       setTimeout(() => {
@@ -88,6 +95,17 @@ export async function playFx(config, context = {}) {
 
   const results = await Promise.all(runs);
   return results.some(Boolean);
+}
+
+/**
+ * Whether any step of a config anchors on a placed template — such configs
+ * are played by the createMeasuredTemplate listener (after the GM places
+ * the template), not immediately on activity use.
+ * @param {object|Array} config
+ * @returns {boolean}
+ */
+export function configUsesTemplate(config) {
+  return normalizeFxSteps(config).some(s => (s.at ?? s.options?.at) === "template");
 }
 
 /**

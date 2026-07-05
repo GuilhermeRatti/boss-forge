@@ -95,12 +95,16 @@
       "Copied": "Snippet de macro copiado para a área de transferência.",
       "OpenDatabase": "Navegar no database do Sequencer",
       "StepsSection": "Composição",
-      "StepsHint": "Encadeie presets numa única ação épica: configure um preset acima e adicione como etapa. Etapas tocam em ordem; cada delay é em ms após o início da etapa anterior. Com etapas presentes, Preview/Aplicar usam a composição inteira.",
+      "StepsHint": "Encadeie presets numa única ação épica: configure um preset acima e adicione como etapa. Delays são em ms após o início da etapa anterior (0 = simultâneas); arraste pela alça para reordenar. Ancore cada etapa no boss, nos alvos ou no template colocado — etapas de template esperam o Mestre posicionar (bola de fogo: cast no boss → raio → explosão encaixada no template). \"Encaixar\" dimensiona/estica a etapa na área do template.",
       "AddStep": "Adicionar preset atual como etapa",
       "RemoveStep": "Remover etapa",
+      "DragStep": "Arraste para reordenar",
       "StepDelay": "delay (ms)",
       "StepAnchor": "âncora",
-      "AtInherit": "Herdar"
+      "StepFit": "encaixar",
+      "StepFitHint": "Dimensiona/estica esta etapa na área do template (cones e raios esticam ao longo dele; círculos e cubos são escalados).",
+      "AtInherit": "Herdar",
+      "AtTemplate": "Template (aguarda posicionamento)"
     },
     "FxPresets": {
       "impact": { "Name": "Impacto", "Tag": "golpe único", "Description": "Um efeito em cada alvo — o golpe básico de todo dia." },

@@ -1,4 +1,4 @@
-import { newSequence, validateFile, locationUuid } from "../helpers.mjs";
+import { newSequence, validateFile, locationUuid, applyTemplateFit } from "../helpers.mjs";
 import { log } from "../../logger.mjs";
 
 function auraOrigin(location) {
@@ -20,7 +20,7 @@ export default {
     { key: "fadeIn", type: "number", default: 500 },
     { key: "belowToken", type: "boolean", default: true }
   ],
-  async play({ file, locations = [], scale, opacity = 0.75, fadeIn = 500, belowToken = true } = {}) {
+  async play({ file, locations = [], scale, opacity = 0.75, fadeIn = 500, belowToken = true, fit } = {}) {
     if (!locations.length || !validateFile(file)) return false;
     const sequence = newSequence();
     let queued = 0;
@@ -38,6 +38,7 @@ export default {
         .opacity(opacity)
         .fadeIn(fadeIn)
         .belowTokens(belowToken);
+      if (fit) applyTemplateFit(effect, location);
       if (typeof scale === "number") effect.scale(scale);
       queued++;
     }

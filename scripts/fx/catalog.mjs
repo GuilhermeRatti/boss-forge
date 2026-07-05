@@ -5,6 +5,9 @@ import { setItemFx } from "../legendary/item-fx.mjs";
 import { setActorLegresFx } from "../legendary/resistance.mjs";
 import { setActorLairFx } from "../lair.mjs";
 import { getActivitiesByActivationType } from "../legendary/activities.mjs";
+import { registerColorWheel } from "./color-wheel.mjs";
+
+registerColorWheel();
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -28,7 +31,7 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["boss-forge-app"],
     window: {
       title: "BOSSFORGE.FxCatalog.Title",
-      icon: "fa-solid fa-fire-flame-curved",
+      icon: "fa-solid fa-hammer",
       resizable: true
     },
     position: { width: 860, height: 640 },
@@ -108,10 +111,12 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
         icon: PRESET_ICONS[s.preset] ?? "fa-solid fa-wand-sparkles",
         name: game.i18n.localize(`BOSSFORGE.FxPresets.${s.preset}.Name`),
         delay: s.delay ?? 0,
+        fit: !!s.fit,
         anchors: [
           { value: "", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtInherit"), selected: !s.at },
           { value: "boss", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtBoss"), selected: s.at === "boss" },
-          { value: "targets", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtTargets"), selected: s.at === "targets" }
+          { value: "targets", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtTargets"), selected: s.at === "targets" },
+          { value: "template", label: game.i18n.localize("BOSSFORGE.FxCatalog.AtTemplate"), selected: s.at === "template" }
         ]
       })),
       hasSteps: this.#steps.length > 0,
@@ -151,6 +156,48 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
       if (select.value) step.at = select.value;
       else delete step.at;
     }
+    for (const checkbox of this.element.querySelectorAll("input[name=stepFit]")) {
+      const step = this.#steps[Number(checkbox.dataset.index)];
+      if (!step) continue;
+      if (checkbox.checked) step.fit = true;
+      else delete step.fit;
+    }
+  }
+
+  /** @override Wire drag-and-drop reordering of composition steps. */
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+    let dragIndex = null;
+    for (const chip of this.element.querySelectorAll(".bf-step-chip")) {
+      const grip = chip.querySelector(".bf-step-grip");
+      grip?.addEventListener("dragstart", event => {
+        dragIndex = Number(chip.dataset.index);
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(dragIndex));
+        event.dataTransfer.setDragImage(chip, 20, 20);
+      });
+      // Clear on ANY drag end (drop, ESC, drag-out) so a stale index can
+      // never let an unrelated drop reorder the steps.
+      grip?.addEventListener("dragend", () => { dragIndex = null; });
+      chip.addEventListener("dragover", event => {
+        if (dragIndex === null) return;
+        event.preventDefault();
+        chip.classList.add("bf-drop-target");
+      });
+      chip.addEventListener("dragleave", () => chip.classList.remove("bf-drop-target"));
+      chip.addEventListener("drop", async event => {
+        event.preventDefault();
+        chip.classList.remove("bf-drop-target");
+        const to = Number(chip.dataset.index);
+        if (dragIndex === null || dragIndex === to) return;
+        this.#readForm();
+        this.#readStepDelays();
+        const [moved] = this.#steps.splice(dragIndex, 1);
+        this.#steps.splice(to, 0, moved);
+        dragIndex = null;
+        await this.render();
+      });
+    }
   }
 
   /** The composition if steps exist, else the current single-preset form. */
@@ -189,6 +236,7 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #onRemoveStep(event, target) {
+    this.#readForm();
     this.#readStepDelays();
     this.#steps.splice(Number(target.dataset.index), 1);
     await this.render();
@@ -276,7 +324,7 @@ export function registerCatalogButton() {
     tokens.tools.bossForgeFxCatalog = {
       name: "bossForgeFxCatalog",
       title: "BOSSFORGE.FxCatalog.OpenButton",
-      icon: "fa-solid fa-fire-flame-curved",
+      icon: "fa-solid fa-hammer",
       order: 100,
       button: true,
       onChange: () => openCatalog()

@@ -95,12 +95,16 @@
       "Copied": "Macro snippet copied to clipboard.",
       "OpenDatabase": "Browse the Sequencer database",
       "StepsSection": "Composition",
-      "StepsHint": "Chain presets into one epic action: set up a preset above and add it as a step. Steps play in order; each delay is in ms after the previous step starts. With steps present, Preview/Apply use the whole composition.",
+      "StepsHint": "Chain presets into one epic action: set up a preset above and add it as a step. Delays are ms after the previous step starts (0 = simultaneous); drag the grip to reorder. Anchor each step on the boss, the targets or the placed template — template steps wait for the GM to place it (fireball: cast on boss → beam → explosion fitted on the template). \"Fit\" sizes/stretches the step to the template area.",
       "AddStep": "Add current preset as a step",
       "RemoveStep": "Remove step",
+      "DragStep": "Drag to reorder",
       "StepDelay": "delay (ms)",
       "StepAnchor": "anchor",
-      "AtInherit": "Inherit"
+      "StepFit": "fit",
+      "StepFitHint": "Size/stretch this step to the template area (cones and rays stretch along it; circles and cubes are scaled to it).",
+      "AtInherit": "Inherit",
+      "AtTemplate": "Template (waits for placement)"
     },
     "FxPresets": {
       "impact": { "Name": "Impact", "Tag": "single hit", "Description": "One effect at each target location — the bread-and-butter strike." },

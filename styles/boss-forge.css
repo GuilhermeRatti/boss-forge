@@ -156,12 +156,22 @@ body.theme-light .application.boss-forge-legendary {
 }
 
 .boss-forge-app .bf-rail-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--bf-heat);
   margin: 0 2px 4px;
   text-shadow: 0 0 8px var(--bf-ember-faint);
+}
+
+.boss-forge-app .bf-rail-emblem {
+  width: 30px;
+  height: 30px;
+  border: none;
+  filter: drop-shadow(0 0 5px var(--bf-ember-faint));
 }
 
 .boss-forge-app .bf-preset-card {
@@ -345,14 +355,39 @@ body.theme-light .application.boss-forge-legendary {
   outline: none;
 }
 
-.boss-forge-app .bf-field input.bf-color {
-  width: 64px;
-  height: 30px;
-  padding: 2px;
-  background: var(--bf-bg-inset);
-  border: 1px solid var(--bf-steel);
+/* Hue-ring + SV-triangle color wheel */
+.boss-forge-app bf-color-wheel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boss-forge-app bf-color-wheel canvas {
+  width: 156px;
+  height: 156px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.boss-forge-app .bf-cw-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.boss-forge-app .bf-cw-swatch {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--bf-steel-light);
   clip-path: var(--bf-chamfer-sm);
-  cursor: pointer;
+  box-shadow: var(--bf-emboss);
+}
+
+.boss-forge-app .bf-cw-hex {
+  font-family: monospace;
+  font-size: 0.74rem;
+  color: var(--bf-text-dim);
 }
 
 .boss-forge-app .bf-file-row {
@@ -475,6 +510,20 @@ body.theme-light .application.boss-forge-legendary {
   border: 1px solid var(--bf-steel);
   clip-path: var(--bf-chamfer-sm);
   box-shadow: var(--bf-emboss);
+}
+
+.boss-forge-app .bf-step-grip {
+  flex: 0 0 auto;
+  color: var(--bf-text-dim);
+  cursor: grab;
+  padding: 2px 2px 2px 0;
+}
+
+.boss-forge-app .bf-step-grip:active { cursor: grabbing; }
+
+.boss-forge-app .bf-step-chip.bf-drop-target {
+  border-color: var(--bf-heat);
+  box-shadow: 0 0 10px var(--bf-ember-soft), var(--bf-emboss);
 }
 
 .boss-forge-app .bf-step-order {

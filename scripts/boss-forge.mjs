@@ -3,7 +3,7 @@ import { registerSettings } from "./settings.mjs";
 import { log } from "./logger.mjs";
 import { runDiagnostics, buildDiagnosticsReport } from "./diagnostics.mjs";
 import { registerLegendaryOrchestrator, setPromptEnabled } from "./legendary/orchestrator.mjs";
-import { setItemFx, clearItemFx, getItemFx } from "./legendary/item-fx.mjs";
+import { setItemFx, clearItemFx, getItemFx, registerTemplateFx } from "./legendary/item-fx.mjs";
 import {
   registerLegendaryResistance,
   setActorLegresFx,
@@ -42,6 +42,7 @@ Hooks.once("init", () => {
   registerLegendaryResistance();
   registerLairOrchestrator();
   registerPhaseOrchestrator();
+  registerTemplateFx();
   registerCatalogButton();
   log.info("Initialized.");
 });

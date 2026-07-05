@@ -46,6 +46,9 @@ jobs:
             scripts/ \
             lang/ \
             packs/ \
+            styles/ \
+            templates/ \
+            assets/ \
             README.md CHANGELOG.md LICENSE \
             -x "packs/_source/*"
 

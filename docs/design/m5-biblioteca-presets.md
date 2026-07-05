@@ -50,6 +50,18 @@ Identidade visual **própria** (instrução do usuário: inspirar no BLFX sem co
 4. **Identidade v2 — "ferro fundido"**: o v1 leu como "terrano de SC2" para o usuário; a v2 puxa para forja de verdade — placas de aço **em relevo** (embossing por sombras internas), **rebites** nos cantos das barras e do ícone-herói, **costuras de lava animadas** (gradiente fluindo no sublinhado do herói, na borda das seções e no botão primário), vermelho-lava vivo (`#ff2d00`) + amarelo-calor, marca d'água de **dragão** fantasma no herói, e os dialogs do M1/M3/legres ganharam o mesmo tratamento (header com costura de lava, botões de ferro). `prefers-reduced-motion` desliga as animações.
 5. **Para chegar na "moldura de dragão esculpido" imaginada pelo usuário**: CSS puro tem teto — o próximo salto exige **arte**: uma moldura 9-slice em PNG com transparência (ornamentos de ferro/dragão nos cantos; ~512×512, cantos de ~96px) + opcionalmente uma fonte display licenciável. O usuário pode gerar/encomendar essas peças; a Forja as adota via `border-image` sem refatorar nada.
 
+## 6c. Terceira iteração (2026-07-04, vídeo comparativo do usuário): FX ancorado em template
+
+O sopro "jogado" vs. o sopro "certinho" do vídeo definiu o requisito: **esperar o GM posicionar o template e tocar a composição rotacionada/ancorada/escalada nele**. Fatos verificados na fonte que sustentam o design:
+
+- dnd5e grava **`flags.dnd5e.item` (uuid do item) e `flags.dnd5e.origin` (uuid da activity)** em todo template criado por activity (`AbilityTemplate.fromActivity`, ~16281–16291) — e o hook `dnd5e.createActivityTemplate` dispara na fase de PREVIEW (antes do posicionamento), então o gatilho correto é o **`createMeasuredTemplate` do core** (pós-posicionamento, com `userId` do cliente que colocou).
+- O Sequencer **rotaciona nativamente** efeitos ancorados em templates não-`rect` (herda `direction`, ~15268) e resolve posição como **origem** (ápice de cone/raio; centro de círculo) e, com `measure: true` (alvo de `stretchTo`), como **ponta final** (~18039–18045) — logo `.atLocation(template).stretchTo(template)` é o sopro perfeito.
+- `EffectSection.size(valor, { gridUnits })` (~23965) escala círculos/cubos à área exata (o fit-to-area que estava na fila §7 aterrissou aqui, no caso de uso real).
+
+Arquitetura: âncora de etapa **`template`** + toggle **`fit`** por etapa (a distinção "cosmético vs. mecânico" do usuário: no cast → aura → sopro, só o sopro leva fit). Configs com etapas de template **não tocam no uso** — o listener de `createMeasuredTemplate` resolve o item pela flag e toca tudo ancorado (funciona no fluxo nativo, no Midi e em cast direto da ficha; roda só no cliente que posicionou; Sequencer transmite). Cubos 5e guardam `distance` como diagonal de 45° — lado = d/√2 na conversão do fit.
+
+Também nesta iteração: **drag-and-drop para reordenar etapas** (alça de arrasto), **color wheel anel-de-matiz + triângulo SV** desenhado em canvas (pedido do usuário: "humanos não veem hexadecimal" → agora nem precisa saber que hex existe), e **emblema próprio** (bigorna + martelo, SVG autoral) substituindo a chama que colidia com a identidade do BLFX.
+
 ## 7. Backlog de ideias (do usuário)
 
 - **Telegraph por turnos** (2026-07-04): virada de turno telegrafa X impactos; na virada seguinte eles explodem e novos X são telegrafados — mecânica de boss fight acoplada ao tracker. A discutir (impacto no ritmo da luta) antes de prototipar.

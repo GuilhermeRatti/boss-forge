@@ -1,6 +1,46 @@
 import { MODULE_ID, FLAGS } from "../constants.mjs";
 import { log } from "../logger.mjs";
-import { playFx, assertValidFxConfig } from "../fx/presets.mjs";
+import { playFx, assertValidFxConfig, configUsesTemplate } from "../fx/presets.mjs";
+
+/**
+ * Template-anchored FX: when any step of an item's FX config anchors on
+ * "template", playback waits for the GM to actually place the measured
+ * template. dnd5e stamps flags.dnd5e.item (item uuid) on templates created
+ * by activities (native flow, Midi and straight-from-the-sheet casts all
+ * pass through it), so the createMeasuredTemplate hook resolves the item
+ * directly. Runs only on the placing client — Sequencer broadcasts.
+ */
+export function registerTemplateFx() {
+  Hooks.on("createMeasuredTemplate", onTemplatePlaced);
+}
+
+async function onTemplatePlaced(templateDoc, options, userId) {
+  try {
+    if (userId !== game.user.id) return;
+    const itemUuid = templateDoc.getFlag("dnd5e", "item");
+    if (!itemUuid) return;
+    const item = await fromUuid(itemUuid);
+    if (!item) return;
+    const fx = getItemFx(item);
+    // The RAW flag goes to both the check and playFx: normalizeFxSteps
+    // handles every stored shape (single, steps, wrapper-level at) and
+    // playFx strips per-step at itself.
+    if (!fx || !configUsesTemplate(fx)) return;
+    const template = templateDoc.object ?? templateDoc;
+    const tokenDoc = item.actor?.token ?? item.actor?.getActiveTokens(false, true)[0];
+    const source = tokenDoc?.object ?? tokenDoc;
+    const userTargets = [...game.user.targets];
+    log.debug(`Template FX for "${item.name}" (template t=${templateDoc.t}).`);
+    await playFx(fx, {
+      locations: [template],
+      source,
+      targets: userTargets.length ? userTargets : undefined,
+      template
+    });
+  } catch (err) {
+    log.error("Template-anchored FX failed.", err);
+  }
+}
 
 /**
  * Macro/API helpers to attach an FX preset to a legendary action item
@@ -61,36 +101,23 @@ export function getItemFx(item) {
 export async function playItemFx(item, combatant) {
   const fx = getItemFx(item);
   if (!fx) return;
-  const at = fx.at ?? fx.options?.at;
-  const locations = resolveLocations(at, combatant);
-  if (!locations.length) {
-    log.debug(`FX: no locations resolved for "${item.name}" (at: ${at}).`);
+  // Template-anchored configs are played by onTemplatePlaced after the GM
+  // places the template — checked on the RAW flag before any reshaping.
+  if (configUsesTemplate(fx)) {
+    log.debug(`FX for "${item.name}" anchors on a template; waiting for placement.`);
     return;
   }
-  const source = combatant.token?.object ?? combatant.token;
+  const token = combatant.token?.object ?? combatant.token;
+  if (!token) {
+    log.debug(`FX: no token resolved for "${item.name}".`);
+    return;
+  }
   const userTargets = [...game.user.targets];
-  const config = fx.steps
-    ? fx.steps
-    : { preset: fx.preset, options: (({ at: _at, ...rest }) => rest)(fx.options ?? {}) };
-  await playFx(config, {
-    locations,
-    source,
+  // Default locations = the boss token; per-step anchors (including the
+  // legacy flag-level at, propagated by normalizeFxSteps) pick targets.
+  await playFx(fx, {
+    locations: [token],
+    source: token,
     targets: userTargets.length ? userTargets : undefined
   });
-}
-
-/**
- * "boss" (default) plays on the boss token; "targets" plays on the GM's
- * currently targeted tokens, falling back to the boss token.
- * @param {"boss"|"targets"|undefined} at
- * @param {Combatant} combatant
- * @returns {Array<object>}
- */
-function resolveLocations(at, combatant) {
-  if (at === "targets") {
-    const targets = [...game.user.targets];
-    if (targets.length) return targets;
-  }
-  const token = combatant.token?.object ?? combatant.token;
-  return token ? [token] : [];
 }
