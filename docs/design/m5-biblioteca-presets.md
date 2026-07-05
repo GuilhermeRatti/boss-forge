@@ -22,6 +22,7 @@ Cada preset é um módulo em `scripts/fx/presets/` exportando `{ id, params, pla
 | `telegraph` | `radius?` (grid, default 2), `color?` (default `#ff4d00`), `duration?` (ms, default 1600), `file?`, `scale?` | Círculo de aviso via `.shape()` (sem asset, `belowTokens`), e se `file` for dado, o impacto cai quando o aviso termina. |
 | `beam` | `file`, `scale?` | `.stretchTo()` do `source` (boss) até cada location — raios, breaths, correntes. |
 | `aura` | `file`, `scale?`, `opacity?` (0.75), `fadeIn?` (500), `belowToken?` (true) | `.attachTo(token).persist()` com `origin("boss-forge.aura.<tokenUuid>")`; `api.fx.clearAuras(actorOuToken)` encerra só as nossas. Persiste entre reloads (comportamento do Sequencer). |
+| `rain` | `file`, `count?` (5), `radius?` (grid, 6), `interval?` (300 ms), `telegraph?` (true), `telegraphDuration?` (1200), `impactRadius?` (1), `color?`, `scale?` | **Chuva de impactos aleatórios** (ideia do usuário, 2026-07-04): pontos uniformes num raio ao redor do centro (token do boss por padrão), escalonados por `interval`, cada um telegrafado por um círculo que expira exatamente quando o impacto cai. |
 
 Casos de uso imediatos: `aura` como FX de fase (enrage!), `telegraph` como FX de lair action, `beam` como FX de ação lendária com `at: "targets"`.
 
@@ -32,6 +33,10 @@ Casos de uso imediatos: `aura` como FX de fase (enrage!), `telegraph` como FX de
 ## 5. Parte 2 — catálogo (próxima entrega)
 
 `ApplicationV2` com: lista de presets (do registro), formulário por metadados, seletor de asset com busca no `Sequencer.Database` (prefixos reais da mesa: `jb2a`, `blfx`), preview no token selecionado, aplicar em item (ações lendárias/covil) ou ator (legres/covil/fases). i18n dos labels de parâmetros entra aí. Estética: primeira aplicação séria da barra de qualidade de UI.
+
+**Norte de design (2026-07-04, indicado pelo usuário: a UI do BLFX)** — extraído do CSS instalado (`boss-loot-assets-premium/styles/blap.css`) e do vídeo de referência do usuário: variáveis CSS com tema claro/escuro (`body.theme-light`), layout **master-detail 30/70** (busca + filtros + lista à esquerda; detalhe/preview à direita), inputs em pílula (radius 20px), animação de glow para chamar atenção. Identidade própria do Boss Forge: paleta carvão + **laranja-brasa** (`#ff4d00`, o mesmo do telegraph) no lugar do dourado/vinho do BLFX.
+
+**Técnica anotada (observação do usuário)**: o BLFX cria *atores invisíveis* para magias como Darkness/Daylight — provável veículo para fontes de luz/escuridão móveis e controláveis. Guardar como caminho para futuros presets de iluminação (aura de escuridão, eclipse de fase); fora do escopo da parte 2.
 
 ## 6. Pós-teste
 

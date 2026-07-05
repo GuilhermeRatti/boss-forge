@@ -2,6 +2,7 @@ import { log } from "../logger.mjs";
 import impact from "./presets/impact.mjs";
 import telegraph from "./presets/telegraph.mjs";
 import beam from "./presets/beam.mjs";
+import rain from "./presets/rain.mjs";
 import aura, { clearAuras } from "./presets/aura.mjs";
 
 /**
@@ -9,7 +10,7 @@ import aura, { clearAuras } from "./presets/aura.mjs";
  * metadata + play) — the params descriptors will also drive the M5 catalog
  * UI, so adding a preset means one file plus one import here.
  */
-const REGISTRY = new Map([impact, telegraph, beam, aura].map(p => [p.id, p]));
+const REGISTRY = new Map([impact, telegraph, beam, rain, aura].map(p => [p.id, p]));
 
 export { clearAuras };
 
