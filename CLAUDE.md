@@ -63,6 +63,7 @@ Verificações já feitas: `docs/research/`.
 - Flags sob namespace `boss-forge`; design do boss em flags do Actor; itens gerados levam flag de origem para regeneração idempotente.
 - JavaScript ESM puro, sem bundler (introduzir só com justificativa). Packs têm source JSON em `packs/_source/` compilado com `npm run packs:build` (isso não é build de código).
 - libWrapper apenas se um patch for inevitável; preferir hooks.
+- **Gatilhos de fase são modulares por instrução do usuário** (2026-07-04: "com certeza vou ter mais ideias de transições de fase... toda implementação nesse sentido deve ser modular e de fácil alteração/edição/remoção"). Anatomia de um gatilho: 1 flag em `constants.mjs` + 1 checker isolado em `phases.mjs` + par de funções de API (`linkX`/`clearX`) + strings i18n. Adicionar/remover um gatilho = mexer só nessas peças; a futura UI deve consumir essa mesma estrutura.
 - Conventional commits, commits pequenos, `CHANGELOG.md` mantido (Keep a Changelog). Licença MIT.
 - Todas as strings de UI em `lang/en.json` e `lang/pt-BR.json` (prefixo `BOSSFORGE.`).
 

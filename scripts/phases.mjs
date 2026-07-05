@@ -176,6 +176,10 @@ async function togglePhaseEffects(actor, phase) {
       const effect = all.find(e => e.name === name);
       if (!effect) {
         log.warn(`Phase effect "${name}" not found on ${actor.name}.`);
+        await whisperGM("BOSSFORGE.Phases.EffectNotFound", {
+          effect: escapeHtml(name),
+          name: escapeHtml(actor.name)
+        });
         continue;
       }
       await effect.update({ disabled });

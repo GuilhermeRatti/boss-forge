@@ -53,6 +53,7 @@
     "Phases": {
       "Announcement": "{boss} enters a new phase: {name}!",
       "DefaultName": "Phase {index}",
+      "EffectNotFound": "Phase config: no ActiveEffect named \"{effect}\" exists on {name}. Create one with that exact name (sheet → Effects) or fix the phase's effects list.",
       "DeathTriggerFired": "Phase trigger: every linked creature is down — {name} advances a phase.",
       "GapTriggerFired": "Phase trigger: HP gap of {gap}% between {name} and {other} — both advance a phase."
     },

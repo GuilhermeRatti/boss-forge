@@ -53,6 +53,7 @@
     "Phases": {
       "Announcement": "{boss} entra em uma nova fase: {name}!",
       "DefaultName": "Fase {index}",
+      "EffectNotFound": "Config de fase: não existe ActiveEffect chamado \"{effect}\" em {name}. Crie um com esse nome exato (ficha → Efeitos) ou corrija a lista de effects da fase.",
       "DeathTriggerFired": "Gatilho de fase: todas as criaturas vinculadas caíram — {name} avança de fase.",
       "GapTriggerFired": "Gatilho de fase: diferença de {gap}% de HP entre {name} e {other} — ambos avançam de fase."
     },
