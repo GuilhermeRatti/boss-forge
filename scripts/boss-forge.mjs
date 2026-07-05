@@ -9,7 +9,7 @@ import {
   setActorLegresFx,
   clearActorLegresFx
 } from "./legendary/resistance.mjs";
-import { playPreset, listPresets, presetExists } from "./fx/presets.mjs";
+import { playPreset, listPresets, presetExists, describePreset, clearAuras } from "./fx/presets.mjs";
 import {
   registerLairOrchestrator,
   setInside,
@@ -52,7 +52,9 @@ Hooks.once("ready", () => {
     fx: Object.freeze({
       play: playPreset,
       list: listPresets,
-      exists: presetExists
+      exists: presetExists,
+      describe: describePreset,
+      clearAuras
     }),
     legendary: Object.freeze({
       setItemFx,

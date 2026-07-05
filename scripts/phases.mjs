@@ -163,7 +163,7 @@ async function playPhaseFx(actor, phase) {
   const sequence = Array.isArray(phase.fx) ? phase.fx : [phase.fx];
   for (const fx of sequence) {
     if (!fx?.preset) continue;
-    await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token] });
+    await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token], source: token });
   }
 }
 

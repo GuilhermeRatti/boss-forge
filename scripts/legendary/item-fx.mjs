@@ -63,7 +63,8 @@ export async function playItemFx(item, combatant) {
     log.debug(`FX: no locations resolved for "${item.name}" (at: ${at}).`);
     return;
   }
-  await playPreset(fx.preset, { ...options, locations });
+  const source = combatant.token?.object ?? combatant.token;
+  await playPreset(fx.preset, { ...options, locations, source });
 }
 
 /**

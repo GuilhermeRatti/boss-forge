@@ -60,7 +60,7 @@ async function playActorLegresFx(actor, tokenDoc) {
   if (!fx?.preset) return;
   const token = tokenDoc?.object ?? tokenDoc;
   if (!token) return;
-  await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token] });
+  await playPreset(fx.preset, { ...(fx.options ?? {}), locations: [token], source: token });
 }
 
 /* -------------------------------------------- */
