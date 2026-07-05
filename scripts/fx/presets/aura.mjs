@@ -1,4 +1,4 @@
-import { newSequence, validateFile, locationUuid, applyTemplateFit } from "../helpers.mjs";
+import { newSequence, validateFile, locationUuid } from "../helpers.mjs";
 import { log } from "../../logger.mjs";
 
 function auraOrigin(location) {
@@ -20,25 +20,28 @@ export default {
     { key: "fadeIn", type: "number", default: 500 },
     { key: "belowToken", type: "boolean", default: true }
   ],
-  async play({ file, locations = [], scale, opacity = 0.75, fadeIn = 500, belowToken = true, fit } = {}) {
+  // Auras attach to tokens; template snapshots and plain points have no
+  // stable uuid to persist/clear on, so those fall back to the source token
+  // (an anchorless aura step in a template composition means "the boss").
+  async play({ file, locations = [], source, scale, opacity = 0.75, fadeIn = 500, belowToken = true } = {}) {
     if (!locations.length || !validateFile(file)) return false;
     const sequence = newSequence();
     let queued = 0;
     for (const location of locations) {
-      const origin = auraOrigin(location);
+      const anchor = auraOrigin(location) ? location : source;
+      const origin = auraOrigin(anchor);
       if (!origin) {
-        log.debug("FX aura: location has no uuid (plain point?); skipping.");
+        log.warn("FX aura: location has no stable uuid (template or plain point) and no source token; skipping.");
         continue;
       }
       const effect = sequence.effect()
         .file(file)
-        .attachTo(location)
+        .attachTo(anchor)
         .persist(true)
         .origin(origin)
         .opacity(opacity)
         .fadeIn(fadeIn)
         .belowTokens(belowToken);
-      if (fit) applyTemplateFit(effect, location);
       if (typeof scale === "number") effect.scale(scale);
       queued++;
     }

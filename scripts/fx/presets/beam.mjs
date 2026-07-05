@@ -1,8 +1,10 @@
-import { newSequence, validateFile } from "../helpers.mjs";
+import { newSequence, validateFile, templateGeometry } from "../helpers.mjs";
 
 /**
  * Beams/breaths: stretches the effect from the source (the boss token) to
- * each location. Meant for use with at: "targets" in the FX flags.
+ * each location. Meant for use with at: "targets" in the FX flags. Template
+ * locations resolve to the template endpoint (cones/rays) or area center
+ * (circles/cubes) — fireball projectiles fly to the placed area.
  */
 export default {
   id: "beam",
@@ -17,7 +19,9 @@ export default {
     if (!targets.length) return false;
     const sequence = newSequence();
     for (const target of targets) {
-      const effect = sequence.effect().file(file).atLocation(origin).stretchTo(target);
+      const geo = templateGeometry(target);
+      const endpoint = geo ? ((geo.t === "cone" || geo.t === "ray") ? geo.end : geo.anchor) : target;
+      const effect = sequence.effect().file(file).atLocation(origin).stretchTo(endpoint);
       if (typeof scale === "number") effect.scale(scale);
     }
     await sequence.play();

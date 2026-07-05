@@ -1,10 +1,12 @@
-import { newSequence, validateFile } from "../helpers.mjs";
+import { newSequence, validateFile, templateGeometry } from "../helpers.mjs";
 
 /**
  * Randomized multi-impact barrage (meteor rain): impacts land at random
  * points inside a radius (grid squares) around the center — the boss token
  * by default — staggered by `interval` ms, each optionally telegraphed by a
- * warning circle that expires exactly when its impact lands.
+ * warning circle that expires exactly when its impact lands. Anchored on a
+ * template, the barrage centers on the template area and circles/cubes also
+ * take their radius from it (the `radius` param is ignored there).
  */
 function randomPointAround(center, radiusPx) {
   const angle = Math.random() * 2 * Math.PI;
@@ -35,11 +37,18 @@ export default {
     telegraph = true, telegraphDuration = 1200,
     impactRadius = 1, color = "#ff4d00", scale
   } = {}) {
-    const centerRef = source ?? locations[0];
+    // A template location wins over the boss as the barrage center.
+    const centerRef = locations.find(l => templateGeometry(l)) ?? source ?? locations[0];
     if (!centerRef || !validateFile(file)) return false;
+    const geo = templateGeometry(centerRef);
     const obj = centerRef.object ?? centerRef;
-    const center = obj.center ?? { x: obj.x ?? 0, y: obj.y ?? 0 };
-    const radiusPx = Math.max(1, radius) * canvas.grid.size;
+    const center = geo?.center ?? obj.center ?? { x: obj.x ?? 0, y: obj.y ?? 0 };
+    // The 1-square floor only guards the user-supplied param; template
+    // measurements are legitimate below one square (5-ft cubes).
+    const areaRadius = (geo?.t === "circle") ? geo.radiusGrid
+      : (geo?.t === "rect") ? Math.min(geo.rectWidthGrid, geo.rectHeightGrid) / 2
+      : Math.max(1, radius);
+    const radiusPx = Math.max(areaRadius * canvas.grid.size, 4);
 
     const sequence = newSequence();
     for (let i = 0; i < Math.max(1, count); i++) {

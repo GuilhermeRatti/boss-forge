@@ -1,6 +1,7 @@
 import { MODULE_ID } from "../constants.mjs";
 import { log } from "../logger.mjs";
 import { listPresets, describePreset, playPreset, playFx } from "./presets.mjs";
+import { snapshotTemplate } from "./helpers.mjs";
 import { setItemFx } from "../legendary/item-fx.mjs";
 import { setActorLegresFx } from "../legendary/resistance.mjs";
 import { setActorLairFx } from "../lair.mjs";
@@ -192,8 +193,12 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
         if (dragIndex === null || dragIndex === to) return;
         this.#readForm();
         this.#readStepDelays();
+        // Delays belong to the slot, not the step: reordering keeps the
+        // composition's rhythm (0 → 600 → 600...) without manual re-editing.
+        const delays = this.#steps.map(s => s.delay ?? 0);
         const [moved] = this.#steps.splice(dragIndex, 1);
         this.#steps.splice(to, 0, moved);
+        this.#steps.forEach((step, i) => { step.delay = delays[i]; });
         dragIndex = null;
         await this.render();
       });
@@ -215,10 +220,14 @@ export class FxCatalog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     const source = controlled[0];
     const targets = [...game.user.targets];
+    // The last template placed on the scene anchors template steps, so the
+    // GM can iterate on fit/rotation without spending the action.
+    const template = canvas.templates.placeables.at(-1);
     return {
       source,
       locations: targets.length ? targets : [source],
-      targets: targets.length ? targets : undefined
+      targets: targets.length ? targets : undefined,
+      template: template ? snapshotTemplate(template.document) : undefined
     };
   }
 

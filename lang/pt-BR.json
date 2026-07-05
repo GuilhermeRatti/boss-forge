@@ -102,13 +102,13 @@
       "StepDelay": "delay (ms)",
       "StepAnchor": "âncora",
       "StepFit": "encaixar",
-      "StepFitHint": "Dimensiona/estica esta etapa na área do template (cones e raios esticam ao longo dele; círculos e cubos são escalados).",
+      "StepFitHint": "Etapas no template sempre rotacionam para a direção colocada; \"encaixar\" também dimensiona/estica na área (cones e raios esticam ao longo dele, círculos e cubos são escalados).",
       "AtInherit": "Herdar",
       "AtTemplate": "Template (aguarda posicionamento)"
     },
     "FxPresets": {
       "impact": { "Name": "Impacto", "Tag": "golpe único", "Description": "Um efeito em cada alvo — o golpe básico de todo dia." },
-      "telegraph": { "Name": "Telegraph", "Tag": "área avisada", "Description": "Círculo de aviso sem asset sob os tokens; o impacto opcional cai exatamente quando o aviso expira." },
+      "telegraph": { "Name": "Telegraph", "Tag": "área avisada", "Description": "Forma de aviso sem asset sob os tokens; o impacto opcional cai exatamente quando o aviso expira. Ancorado num template, vira um overlay exato da área colocada." },
       "beam": { "Name": "Raio", "Tag": "origem → alvo", "Description": "Estica o efeito do boss até cada alvo — breaths, raios e correntes." },
       "rain": { "Name": "Chuva de Meteoros", "Tag": "rajada aleatória", "Description": "Impactos escalonados em pontos aleatórios ao redor do boss, cada um telegrafado pelo próprio círculo de aviso." },
       "aura": { "Name": "Aura", "Tag": "persistente", "Description": "Efeito persistente preso ao token — brilhos de enrage e auras de fase. Limpe com api.fx.clearAuras." }

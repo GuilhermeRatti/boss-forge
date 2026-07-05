@@ -82,7 +82,7 @@ export class BfColorWheel extends HTMLElement {
     side.className = "bf-cw-side";
     side.append(this.#swatch, this.#label);
     this.append(this.#canvas, side);
-    this.#ctx = this.#canvas.getContext("2d");
+    this.#ctx = this.#canvas.getContext("2d", { willReadFrequently: true });
 
     const initial = hexToRgb(this.getAttribute("value"));
     if (initial) [this.#hue, this.#sat, this.#val] = rgbToHsv(...initial);

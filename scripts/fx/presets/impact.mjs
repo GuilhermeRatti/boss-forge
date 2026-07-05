@@ -1,9 +1,10 @@
-import { newSequence, validateFile, applyTemplateFit } from "../helpers.mjs";
+import { newSequence, validateFile, templateGeometry, conformToTemplate } from "../helpers.mjs";
 
 /**
  * A single effect played at each location. The bread-and-butter preset.
- * With fit=true and a template location, the effect is stretched/sized to
- * the template (cone breaths, fitted explosions).
+ * Template locations always orient the effect to the placed direction
+ * (cones/rays); with fit=true it is also stretched/sized to the area
+ * (cone breaths, fitted explosions).
  */
 export default {
   id: "impact",
@@ -16,8 +17,9 @@ export default {
     if (!locations.length || !validateFile(file)) return false;
     const sequence = newSequence();
     for (const location of locations) {
-      const effect = sequence.effect().file(file).atLocation(location);
-      if (fit) applyTemplateFit(effect, location);
+      const geo = templateGeometry(location);
+      const effect = sequence.effect().file(file).atLocation(geo?.anchor ?? location);
+      if (geo) conformToTemplate(effect, geo, { fit });
       if (typeof scale === "number") effect.scale(scale);
       if (typeof delay === "number") effect.delay(delay);
     }

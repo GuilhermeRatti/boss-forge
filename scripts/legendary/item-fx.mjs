@@ -1,6 +1,7 @@
 import { MODULE_ID, FLAGS } from "../constants.mjs";
 import { log } from "../logger.mjs";
 import { playFx, assertValidFxConfig, configUsesTemplate } from "../fx/presets.mjs";
+import { snapshotTemplate } from "../fx/helpers.mjs";
 
 /**
  * Template-anchored FX: when any step of an item's FX config anchors on
@@ -26,7 +27,11 @@ async function onTemplatePlaced(templateDoc, options, userId) {
     // handles every stored shape (single, steps, wrapper-level at) and
     // playFx strips per-step at itself.
     if (!fx || !configUsesTemplate(fx)) return;
-    const template = templateDoc.object ?? templateDoc;
+    // Snapshot the geometry NOW: modules like BLFX delete instantaneous
+    // templates as soon as their own animation fires, so later composition
+    // steps cannot rely on the live placeable still existing.
+    const template = snapshotTemplate(templateDoc);
+    if (!template) return;
     const tokenDoc = item.actor?.token ?? item.actor?.getActiveTokens(false, true)[0];
     const source = tokenDoc?.object ?? tokenDoc;
     const userTargets = [...game.user.targets];

@@ -1,4 +1,4 @@
-import { newSequence, validateFile } from "../helpers.mjs";
+import { newSequence, validateFile, templateGeometry, conformToTemplate } from "../helpers.mjs";
 
 /**
  * Asset-free area warning drawn under the tokens. Three forms:
@@ -6,6 +6,9 @@ import { newSequence, validateFile } from "../helpers.mjs";
  * - "cone": a cone anchored on the source (the boss), pointing at each
  *   location — dragon breath telegraphs. Aperture via `angle`.
  * - "line": a thin rectangle from the source toward each location.
+ * Template locations override the form entirely: the warning overlays the
+ * placed template's exact shape (cone/ray/circle/cube), and the optional
+ * payoff conforms to the same area.
  * When `file` is given, the payoff lands as the warning expires: at the
  * location for circles, stretched source→target for cones and lines.
  */
@@ -44,6 +47,38 @@ function linePoints(direction, lengthPx, widthPx) {
   ];
 }
 
+/** Flat cone (core setting coneTemplateType): a triangle whose edge rays
+ *  extend to distance / cos(angle/2), matching Foundry's flat variant. */
+function flatConePoints(direction, lengthPx, angleDeg) {
+  const half = (angleDeg * Math.PI / 180) / 2;
+  const edge = lengthPx / Math.cos(half);
+  return [
+    [0, 0],
+    [Math.cos(direction - half) * edge, Math.sin(direction - half) * edge],
+    [Math.cos(direction + half) * edge, Math.sin(direction + half) * edge]
+  ];
+}
+
+/** Warning shape overlaying a placed template exactly (local px coords). */
+function applyTemplateShape(warning, geo, shapeOptions) {
+  warning.atLocation(geo.origin);
+  if (geo.t === "cone") {
+    const flat = game.settings.get("core", "coneTemplateType") === "flat";
+    const points = flat
+      ? flatConePoints(geo.rad, geo.lengthPx, geo.angle)
+      : conePoints(geo.rad, geo.lengthPx, geo.angle);
+    warning.shape("polygon", { ...shapeOptions, points });
+  } else if (geo.t === "ray") {
+    warning.shape("polygon", { ...shapeOptions, points: linePoints(geo.rad, geo.lengthPx, geo.widthPx) });
+  } else if (geo.t === "rect") {
+    const dx = Math.cos(geo.rad) * geo.lengthPx;
+    const dy = Math.sin(geo.rad) * geo.lengthPx;
+    warning.shape("polygon", { ...shapeOptions, points: [[0, 0], [dx, 0], [dx, dy], [0, dy]] });
+  } else {
+    warning.shape("circle", { ...shapeOptions, radius: geo.radiusGrid, gridUnits: true });
+  }
+}
+
 export default {
   id: "telegraph",
   params: [
@@ -72,6 +107,7 @@ export default {
     const sequence = newSequence();
 
     for (const location of locations) {
+      const geo = templateGeometry(location);
       const shapeOptions = { fillColor: color, fillAlpha: 0.25, lineSize: 4, lineColor: color };
       const warning = sequence.effect()
         .delay(baseDelay)
@@ -80,7 +116,9 @@ export default {
         .fadeOut(250)
         .belowTokens(true);
 
-      if (form === "cone" || form === "line") {
+      if (geo) {
+        applyTemplateShape(warning, geo, shapeOptions);
+      } else if (form === "cone" || form === "line") {
         const direction = directionBetween(anchorCenter, centerOf(location));
         const points = form === "cone"
           ? conePoints(direction, length * grid, angle)
@@ -92,8 +130,14 @@ export default {
 
       if (hasFile) {
         const payoff = sequence.effect().file(file).delay(baseDelay + duration);
-        if (form === "cone" || form === "line") payoff.atLocation(anchor).stretchTo(location);
-        else payoff.atLocation(location);
+        if (geo) {
+          payoff.atLocation(geo.anchor);
+          conformToTemplate(payoff, geo, { fit: true });
+        } else if (form === "cone" || form === "line") {
+          payoff.atLocation(anchor).stretchTo(location);
+        } else {
+          payoff.atLocation(location);
+        }
         if (typeof scale === "number") payoff.scale(scale);
       }
     }

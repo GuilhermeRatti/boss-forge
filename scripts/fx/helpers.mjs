@@ -35,28 +35,92 @@ export function locationUuid(location) {
 }
 
 /**
- * Fit an effect to a MeasuredTemplate location (no-op for anything else):
- * cones and rays stretch from the template origin to its endpoint (Sequencer
- * rotates and scales along it); circles are sized to the template diameter;
- * 5e "rect" cubes (stored as a 45° diagonal) are sized to their side.
- * Distances are scene units (ft) — converted to grid squares for .size().
- * @param {object} effect    A Sequencer EffectSection (already atLocation'd).
- * @param {object} location  The template placeable or document.
+ * Snapshot a measured template's geometry at placement time as a plain
+ * object. Live placeable references are fragile mid-composition — BLFX (and
+ * other modules) delete instantaneous templates as soon as their own
+ * animation fires — so later steps conform to the snapshot instead.
+ * @param {object} template  MeasuredTemplate placeable or document.
+ * @returns {object|null}
  */
-export function applyTemplateFit(effect, location) {
-  const doc = location?.document ?? location;
-  const type = doc?.t;
-  if (!type) return;
-  if (type === "cone" || type === "ray") {
-    effect.stretchTo(location);
+export function snapshotTemplate(template) {
+  const doc = template?.document ?? template;
+  if (typeof doc?.t !== "string" || typeof doc?.x !== "number") return null;
+  return {
+    bossForgeTemplate: true,
+    t: doc.t,
+    x: doc.x,
+    y: doc.y,
+    direction: doc.direction ?? 0,
+    angle: doc.angle ?? 0,
+    distance: doc.distance ?? 0,
+    width: doc.width ?? 0
+  };
+}
+
+/**
+ * Resolve a location into template geometry in canvas pixels, or null when
+ * the location is not a template (tokens, plain points). Accepts snapshots
+ * (see snapshotTemplate), placeables and documents. Angles follow Foundry's
+ * convention (degrees clockwise from east); distances are scene units (ft).
+ * @param {object} location
+ * @returns {{t: string, origin: {x,y}, end: {x,y}, anchor: {x,y},
+ *   rad: number, angle: number, lengthPx: number, widthPx: number,
+ *   radiusGrid: number, rectWidthGrid: number, rectHeightGrid: number}|null}
+ */
+export function templateGeometry(location) {
+  const snap = location?.bossForgeTemplate ? location : snapshotTemplate(location);
+  if (!snap) return null;
+  const gridSize = canvas.grid.size;
+  const gridDistance = canvas.scene?.grid?.distance || 5;
+  const px = units => (units / gridDistance) * gridSize;
+  const rad = Math.toRadians(snap.direction);
+  const lengthPx = px(snap.distance);
+  const origin = { x: snap.x, y: snap.y };
+  const end = { x: origin.x + Math.cos(rad) * lengthPx, y: origin.y + Math.sin(rad) * lengthPx };
+  // Circle templates store their center as x/y; cones, rays and 5e "rect"
+  // cubes (a 45° diagonal from x/y) get their area center from the midpoint.
+  const anchor = snap.t === "circle"
+    ? origin
+    : { x: (origin.x + end.x) / 2, y: (origin.y + end.y) / 2 };
+  return {
+    t: snap.t,
+    origin,
+    end,
+    anchor: (snap.t === "cone" || snap.t === "ray") ? origin : anchor,
+    center: anchor,
+    rad,
+    angle: snap.angle || 53.13,
+    lengthPx,
+    widthPx: px(snap.width),
+    radiusGrid: snap.distance / gridDistance,
+    // Per-axis rect extents from the stored drag angle. dnd5e cubes are the
+    // 45° case (both = d / sqrt(2)); hand-dragged rects keep their aspect.
+    rectWidthGrid: Math.abs(Math.cos(rad)) * snap.distance / gridDistance,
+    rectHeightGrid: Math.abs(Math.sin(rad)) * snap.distance / gridDistance
+  };
+}
+
+/**
+ * Conform an effect (already atLocation'd on geo.anchor) to the template:
+ * cones and rays always rotate toward the template endpoint — Sequencer
+ * never rotates a plain atLocation sprite (rotation is only applied via
+ * attachTo + bindRotation, sequencer.js ~17200) — and stretch along it when
+ * fit is on; circles and cubes are scaled to the area when fit is on.
+ * @param {object} effect  A Sequencer EffectSection.
+ * @param {object} geo     From templateGeometry().
+ * @param {object} [options]
+ * @param {boolean} [options.fit=false]
+ */
+export function conformToTemplate(effect, geo, { fit = false } = {}) {
+  if (!geo) return;
+  if (geo.t === "cone" || geo.t === "ray") {
+    if (fit) effect.stretchTo(geo.end);
+    else effect.rotateTowards(geo.end);
     return;
   }
-  const unit = canvas.scene?.grid?.distance || 5;
-  if (type === "circle") {
-    effect.size(((doc.distance ?? unit) * 2) / unit, { gridUnits: true });
-  } else if (type === "rect") {
-    // dnd5e cubes store distance as the 45° diagonal (side = d / sqrt(2))
-    const side = (doc.distance ?? unit) / Math.SQRT2;
-    effect.size(side / unit, { gridUnits: true });
+  if (!fit) return;
+  if (geo.t === "circle") effect.size(geo.radiusGrid * 2, { gridUnits: true });
+  else if (geo.t === "rect") {
+    effect.size({ width: geo.rectWidthGrid, height: geo.rectHeightGrid }, { gridUnits: true });
   }
 }
